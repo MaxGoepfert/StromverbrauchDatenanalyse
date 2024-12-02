@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 #plt.use('TkAgg')  # Stabileres Backend für macOS
 
-def plotData(dataset, zeit_spalte, last_spalte):
+def plotData(dataset, zeit_spalte, last_spalte, title):
     # Alle Spalten anzeigen
     pd.set_option('display.max_columns', None)
 
@@ -23,7 +23,7 @@ def plotData(dataset, zeit_spalte, last_spalte):
     # Achsentitel und Plot-Titel
     plt.xlabel("Zeit (Datum von)")
     plt.ylabel("Gesamtlast Strom (in MWh)")  # Einheit anpassen, falls bekannt
-    plt.title("Gesamtlast Strom über die Zeit")
+    plt.title(title)
 
     # Legende und Gitter
     plt.legend()
@@ -48,10 +48,18 @@ def cleanData(dataset, zeit_spalte, last_spalte):
 
 if __name__ == "__main__":
     dataPath = "Realisierter_Stromverbrauch_201701010000_202301010000_Tag.csv"
+    dataPath2 = "Realisierter_Stromverbrauch_2017_2023_Tag_50Hertz.csv"
+    dataPath3 = "Realisierter_Stromverbrauch_2017_2023_Tag_BW.csv"
+
     data = pd.read_csv(dataPath, delimiter=';')
+    data_50Hertz = pd.read_csv(dataPath2, delimiter=';')
+    data_TransNetBW= pd.read_csv(dataPath3, delimiter=';')
     zeit_spalte = "Datum von"
     last_spalte = "Gesamt (Netzlast) [MWh] Berechnete Auflösungen"
-    plotData(data,zeit_spalte, last_spalte)
+    plotData(data,zeit_spalte, last_spalte, "Gesamt")
+    plotData(data_50Hertz,zeit_spalte, last_spalte, "50Hertz")
+    plotData(data_TransNetBW,zeit_spalte, last_spalte, "TransNetBW")
+
 
     varianz = data[last_spalte].var()
     print(f"Die Varianz der Netzlast beträgt: {varianz}")
@@ -64,4 +72,4 @@ if __name__ == "__main__":
     print(f"Der größte Wert in der Spalte {last_spalte} ist: {max_value}")
 
 
-# TO DO Variationskoeffizent Zusammenhänge: Kovarianz/Korrelation, Korrelationskoeffizient
+# TO DO Variationskoeffizent Zusammenhänge: Kovarianz/Korrelation, Korrelationskoeffizient, Anteil Industrie, Anteil Haushalte
