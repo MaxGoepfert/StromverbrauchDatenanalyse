@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 #plt.use('TkAgg')  # Stabileres Backend für macOS
@@ -12,9 +13,6 @@ def plotData(dataset, zeit_spalte, last_spalte, title):
 
     # Maximale Breite einer Spalte erhöhen
     pd.set_option('display.width', 1000)
-
-    # Clean data
-    cleanData(dataset, zeit_spalte, last_spalte)
 
     # Plot erstellen
     plt.figure(figsize=(12, 6))  # Größe des Plots festlegen
@@ -56,20 +54,38 @@ if __name__ == "__main__":
     data_TransNetBW= pd.read_csv(dataPath3, delimiter=';')
     zeit_spalte = "Datum von"
     last_spalte = "Gesamt (Netzlast) [MWh] Berechnete Auflösungen"
-    plotData(data,zeit_spalte, last_spalte, "Gesamt")
-    plotData(data_50Hertz,zeit_spalte, last_spalte, "50Hertz")
-    plotData(data_TransNetBW,zeit_spalte, last_spalte, "TransNetBW")
+
+    # Clean data
+    cleanData(data_50Hertz, zeit_spalte, last_spalte)
+    cleanData(data_TransNetBW, zeit_spalte, last_spalte)
+    #plotData(data,zeit_spalte, last_spalte, "Gesamt")
+    #plotData(data_50Hertz,zeit_spalte, last_spalte, "50Hertz")
+    #plotData(data_TransNetBW,zeit_spalte, last_spalte, "TransNetBW")
 
 
-    varianz = data[last_spalte].var()
-    print(f"Die Varianz der Netzlast beträgt: {varianz}")
+    varianz = data_50Hertz[last_spalte].var()
+    print(f"Die Varianz der Netzlast 50 Hertz beträgt: {varianz}")
+    varianz = data_TransNetBW[last_spalte].var()
+    print(f"Die Varianz der Netzlast TransNetBW beträgt: {varianz}")
 
-    std = data[last_spalte].std()
-    print(f"Die Standartabweichung der Netzlast beträgt: {std}")
+    std_50Hertz = np.std(data_50Hertz[last_spalte])
+
+    std_TransNetBW = np.std(data_TransNetBW[last_spalte])
+
+    mean_50Hertz = np.mean(data_50Hertz[last_spalte])
+    mean_TransNetBW = np.mean(data_TransNetBW[last_spalte])
+
+    vk_50Hertz = (std_50Hertz / mean_50Hertz) * 100
+    vk_TransNetBW = (std_TransNetBW / mean_TransNetBW) * 100
+
+    print(f"Die Variationskoefizient (in %) der Netzlast 50Hertz beträgt: {vk_50Hertz: .2f}%")
+    print(f"Die Variationskoefizient (in %)der Netzlast TransNetBW beträgt: {vk_TransNetBW: .2f}%")
 
     # Größten Wert in der Zielspalte anzeigen
-    max_value = data[last_spalte].max()
-    print(f"Der größte Wert in der Spalte {last_spalte} ist: {max_value}")
+    max_value = data_50Hertz[last_spalte].max()
+    print(f"Der größte Wert in der Spalte {last_spalte} von 50Hertz ist: {max_value}")
+    max_value = data_TransNetBW[last_spalte].max()
+    print(f"Der größte Wert in der Spalte {last_spalte} von TransNetBW ist: {max_value}")
 
 
 # TO DO Variationskoeffizent Zusammenhänge: Kovarianz/Korrelation, Korrelationskoeffizient, Anteil Industrie, Anteil Haushalte
