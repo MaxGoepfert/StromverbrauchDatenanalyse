@@ -1,8 +1,5 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
-color_pal = sns.color_palette()
 
 def cleanData(data, zeit_spalte, last_spalte):
 
@@ -26,27 +23,35 @@ def cleanData(data, zeit_spalte, last_spalte):
 
     return df_verbrauch
 
+def getJahresdurchschnitt(data, zeit_spalte, last_spalte):
+    data_verbrauch = cleanData(data, zeit_spalte, last_spalte)
+
+    data_verbrauch['Jahr'] = data_verbrauch.index.year
+    # Jahresdurchschnitt berechnen
+    data_jahresdurchschnitt = data_verbrauch.groupby('Jahr')[last_spalte].mean().reset_index()
+
+    # Umbenennen der Spalten für Klarheit
+    data_jahresdurchschnitt.rename(columns={last_spalte: 'Jahresdurchschnitt'}, inplace=True)
+    return data_jahresdurchschnitt
 
 
-def plotBoxplot(data, zeit_spalte, last_spalte, title):
-    # clean data and set datetimes as index
-    df_verbrauch = cleanData(data, zeit_spalte, last_spalte)
+def plotJahresdurchschnitt(data, data2,zeit_spalte, last_spalte):
 
-    # dayOfWeek
+    # get Jahresdurchschnitt
+    data = getJahresdurchschnitt(data, zeit_spalte, last_spalte)
+    data2 = getJahresdurchschnitt(data2, zeit_spalte, last_spalte)
 
-    df_verbrauch['Wochentage'] = df_verbrauch.index.dayofweek
-    fig, ax = plt.subplots(figsize=(10,8))
-    sns.boxplot(data=df_verbrauch, x='Wochentage', y=last_spalte, palette='Blues')
-    ax.set_title(title)
+    # Plot
+    plt.figure(figsize=(10, 8))
+    plt.plot(data, label='Jahresdurchschnitt 50Hertz', marker='o', color="blue")
+    plt.plot(data2, label='Jahresdurchschnitt TransNetBW', marker='s', color="orange")
+    plt.title('Jahresdurchschnittlicher Stromverbrauch (2017–2023)')
+    plt.xlabel('Jahr')
+    plt.ylabel('Verbrauch (MWh)')
+    plt.legend(title='ÜNB:')
+    plt.grid()
+    plt.tight_layout()
     plt.show()
-    """
-    # month
-    df_verbrauch['Monat'] = df_verbrauch.index.month
-    fig, ax = plt.subplots(figsize=(10,8))
-    sns.boxplot(data=df_verbrauch, x='Monat', y=last_spalte, palette='Blues')
-    ax.set_title(title)
-    plt.show()
-    """
 
 # call funtion with data
 dataPath50Hertz = 'data/Realisierter_Stromverbrauch_2017_2023_Tag_50Hertz.csv'
@@ -55,21 +60,7 @@ data50Hertz = pd.read_csv(dataPath50Hertz, delimiter=';')
 dataBW = pd.read_csv(dataPathBW, delimiter=';')
 zeit_spalte = 'Datum von'
 last_spalte = 'Gesamt (Netzlast) [MWh] Berechnete Auflösungen'
-plotBoxplot(data50Hertz, zeit_spalte, last_spalte, 'Stromverbrauch der Wochentag für 50Hertz')
-plotBoxplot(dataBW, zeit_spalte, last_spalte, 'Stromverbrauch der Wochentage für TransNetBW')
+print(getJahresdurchschnitt(data50Hertz, zeit_spalte, last_spalte).columns)
 
-# monatliche Korrelation
-
-"""
-# Monatsspalte hinzufügen
-data_50Hertz['Monat'] = data_50Hertz.index.month
-data_TransNetBW['Monat'] = data_TransNetBW.index.month
-
-# Gruppierung nach Monat und Berechnung der Korrelation
-korrelationen_monatlich = data_50Hertz.groupby('Monat')[last_spalte].corr(data_TransNetBW[last_spalte])
-
-# Ausgabe
-print("Korrelationen pro Monat:")
-print(korrelationen_monatlich)
-
-"""
+#print(getJahresdurchschnitt(dataBW, zeit_spalte, last_spalte))
+#plotJahresdurchschnitt(data50Hertz, dataBW, zeit_spalte, last_spalte)

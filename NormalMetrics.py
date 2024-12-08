@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib
+#import matplotlib # for mac
 #plt.use('TkAgg')  # Stabileres Backend für macOS
 
 def plotData(dataset, zeit_spalte, last_spalte, title):
@@ -43,6 +43,24 @@ def cleanData(dataset, zeit_spalte, last_spalte):
     missing_values2 = dataset[last_spalte].isnull().sum()
     #print(f"Fehlende Werte in der Spalte '{last_spalte}': {missing_values2}")
 
+### Langfristige Trends |||| Gleitender Durchschnitt
+def movingAvg(dataset, zeit_spalte, last_spalte, title):
+    dataset['Gleitender Durchschnitt'] = dataset[last_spalte].rolling(window=30).mean()
+    # Plot erstellen
+    plt.figure(figsize=(12, 6))  # Größe des Plots festlegen
+    plt.plot(dataset[zeit_spalte], dataset['Gleitender Durchschnitt'], label="Stromverbrauch (30 Tage-Gleitender- Durchschnitt)", color='blue')
+
+    # Achsentitel und Plot-Titel
+    plt.xlabel("Zeit (Datum von)")
+    plt.ylabel("Gesamtlast Strom (in MWh)")  # Einheit anpassen, falls bekannt
+    plt.title(title)
+
+    # Legende und Gitter
+    plt.legend()
+    plt.grid()
+    # Plot anzeigen
+    plt.show()
+
 
 if __name__ == "__main__":
     dataPath = "data/Realisierter_Stromverbrauch_201701010000_202301010000_Tag.csv"
@@ -62,6 +80,9 @@ if __name__ == "__main__":
     #plotData(data,zeit_spalte, last_spalte, "Gesamt")
     #plotData(data_50Hertz,zeit_spalte, last_spalte, "50Hertz")
     #plotData(data_TransNetBW,zeit_spalte, last_spalte, "TransNetBW")
+
+    #movingAvg(data_50Hertz, zeit_spalte, last_spalte, 'Gleitender Durchschnitt 50Hertz')
+    #movingAvg(data_TransNetBW, zeit_spalte, last_spalte, 'Gleitender Durchschnitt TransNetBW')
 
 
     varianz = data_50Hertz[last_spalte].var()
