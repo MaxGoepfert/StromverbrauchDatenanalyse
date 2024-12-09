@@ -32,6 +32,7 @@ def plotData(dataset, zeit_spalte, last_spalte, title):
 def cleanData(dataset, zeit_spalte, last_spalte):
     # Umwandlung der Zeit-Spalte in datetime, zur Sicherheit
     dataset[zeit_spalte] = pd.to_datetime(dataset[zeit_spalte], dayfirst=True, errors='raise')
+    # Umwandlung Integer
     dataset[last_spalte] = dataset[last_spalte].str.replace('.', '', regex=False)  # Tausendertrennzeichen entfernen
     dataset[last_spalte] = dataset[last_spalte].str.replace(',', '.', regex=False)  # Dezimal-Komma durch Dezimal-Punkt ersetzen
     dataset[last_spalte] = pd.to_numeric(dataset[last_spalte])
