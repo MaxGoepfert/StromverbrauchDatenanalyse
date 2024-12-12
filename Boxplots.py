@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.preprocessing import StandardScaler
+
 color_pal = sns.color_palette()
 
 def cleanData(data, zeit_spalte, last_spalte):
@@ -29,35 +31,47 @@ def cleanData(data, zeit_spalte, last_spalte):
 
 
 def plotBoxplot(data, zeit_spalte, last_spalte, title):
-    # clean data and set datetimes as index
+    # clean data
     df_verbrauch = cleanData(data, zeit_spalte, last_spalte)
 
-    # dayOfWeek
+    ### Standartisieren für Vergleich
+    scaler = StandardScaler()
+    df_verbrauch['standardized_last_spalte'] = scaler.fit_transform(df_verbrauch[[last_spalte]])
+    ###
 
+    # dayOfWeek
     df_verbrauch['Wochentage'] = df_verbrauch.index.dayofweek
     fig, ax = plt.subplots(figsize=(10,8))
-    sns.boxplot(data=df_verbrauch, x='Wochentage', y=last_spalte, palette='Blues')
+    sns.boxplot(data=df_verbrauch, x='Wochentage', y='standardized_last_spalte', palette='Blues')
     ax.set_title(title)
+    plt.xlabel('Wochentage (Montag-Sonntag)')
+    plt.ylabel('Stromverbrauch (standardisiert))')
     plt.show()
     """
     # month
     df_verbrauch['Monat'] = df_verbrauch.index.month
     fig, ax = plt.subplots(figsize=(10,8))
-    sns.boxplot(data=df_verbrauch, x='Monat', y=last_spalte, palette='Blues')
+    sns.boxplot(data=df_verbrauch, x='Monat', y='standardized_last_spalte', palette='Blues')
     ax.set_title(title)
+    #ax.set_ylim(0, 400000)
+    plt.xlabel('Monate (Januar-Dezember)')
+    plt.ylabel('Stromverbrauch (standardisiert)')
     plt.show()
     """
+
 
 # call funtion with data
 dataPath50Hertz = 'data/Realisierter_Stromverbrauch_2017_2023_Tag_50Hertz.csv'
 dataPathBW = 'data/Realisierter_Stromverbrauch_2017_2023_Tag_BW.csv'
+dataPath_DE = 'data/Realisierter_Stromverbrauch_2017-2024_Tag.csv'
 data50Hertz = pd.read_csv(dataPath50Hertz, delimiter=';')
 dataBW = pd.read_csv(dataPathBW, delimiter=';')
+data_DE = pd.read_csv(dataPath_DE, delimiter=';')
 zeit_spalte = 'Datum von'
 last_spalte = 'Gesamt (Netzlast) [MWh] Berechnete Auflösungen'
-plotBoxplot(data50Hertz, zeit_spalte, last_spalte, 'Stromverbrauch der Wochentag für 50Hertz')
+plotBoxplot(data50Hertz, zeit_spalte, last_spalte, 'Stromverbrauch der Wochentage für 50Hertz')
 plotBoxplot(dataBW, zeit_spalte, last_spalte, 'Stromverbrauch der Wochentage für TransNetBW')
-
+#plotBoxplot(data_DE, zeit_spalte, last_spalte, 'Stromverbrauch der Monate in Deutschland')
 # monatliche Korrelation
 
 """

@@ -16,11 +16,11 @@ def plotData(dataset, zeit_spalte, last_spalte, title):
 
     # Plot erstellen
     plt.figure(figsize=(12, 6))  # Größe des Plots festlegen
-    plt.plot(dataset[zeit_spalte], dataset[last_spalte], label="Gesamtlast Strom", color='blue')
+    plt.plot(dataset[zeit_spalte], dataset[last_spalte], label="Gesamtlast Stromverbrauch", color='blue')
 
     # Achsentitel und Plot-Titel
-    plt.xlabel("Zeit (Datum von)")
-    plt.ylabel("Gesamtlast Strom (in MWh)")  # Einheit anpassen, falls bekannt
+    plt.xlabel("Zeit (Tage)")
+    plt.ylabel("Gesamtlast Strom (in Mio. MWh)")  # Einheit anpassen, falls bekannt
     plt.title(title)
 
     # Legende und Gitter
@@ -49,11 +49,11 @@ def movingAvg(dataset, zeit_spalte, last_spalte, title):
     dataset['Gleitender Durchschnitt'] = dataset[last_spalte].rolling(window=30).mean()
     # Plot erstellen
     plt.figure(figsize=(12, 6))  # Größe des Plots festlegen
-    plt.plot(dataset[zeit_spalte], dataset['Gleitender Durchschnitt'], label="Stromverbrauch (30 Tage-Gleitender- Durchschnitt)", color='blue')
+    plt.plot(dataset[zeit_spalte], dataset['Gleitender Durchschnitt'], label="Stromverbrauch (30 Tage-Gleitender-Durchschnitt)", color='blue')
 
     # Achsentitel und Plot-Titel
-    plt.xlabel("Zeit (Datum von)")
-    plt.ylabel("Gesamtlast Strom (in MWh)")  # Einheit anpassen, falls bekannt
+    plt.xlabel("Zeit (Tage)")
+    plt.ylabel("Gesamtlast Strom (in Mio. MWh)")  # Einheit anpassen, falls bekannt
     plt.title(title)
 
     # Legende und Gitter
@@ -64,7 +64,7 @@ def movingAvg(dataset, zeit_spalte, last_spalte, title):
 
 
 if __name__ == "__main__":
-    dataPath = "data/Realisierter_Stromverbrauch_201701010000_202301010000_Tag.csv"
+    dataPath = "data/Realisierter_Stromverbrauch_2017-2024_Tag.csv"
     dataPath2 = "data/Realisierter_Stromverbrauch_2017_2023_Tag_50Hertz.csv"
     dataPath3 = "data/Realisierter_Stromverbrauch_2017_2023_Tag_BW.csv"
 
@@ -73,19 +73,45 @@ if __name__ == "__main__":
     data_TransNetBW= pd.read_csv(dataPath3, delimiter=';')
     zeit_spalte = "Datum von"
     last_spalte = "Gesamt (Netzlast) [MWh] Berechnete Auflösungen"
+    print(data_50Hertz.columns)
 
     # Clean data
-    cleanData(data_50Hertz, zeit_spalte, last_spalte)
-    cleanData(data_TransNetBW, zeit_spalte, last_spalte)
+    #cleanData(data_50Hertz, zeit_spalte, last_spalte)
+    #cleanData(data_TransNetBW, zeit_spalte, last_spalte)
+    cleanData(data, zeit_spalte, last_spalte)
     #plot data
-    #plotData(data,zeit_spalte, last_spalte, "Gesamt")
+    plotData(data,zeit_spalte, last_spalte, "Stromverbrauch Deutschland 2017-2023")
     #plotData(data_50Hertz,zeit_spalte, last_spalte, "50Hertz")
     #plotData(data_TransNetBW,zeit_spalte, last_spalte, "TransNetBW")
 
     #movingAvg(data_50Hertz, zeit_spalte, last_spalte, 'Gleitender Durchschnitt 50Hertz')
     #movingAvg(data_TransNetBW, zeit_spalte, last_spalte, 'Gleitender Durchschnitt TransNetBW')
+    #movingAvg(data, zeit_spalte, last_spalte, 'Gleitender Durchschnitt Deutschland')
 
+    varianz = data[last_spalte].var()
+    print(f"Die Varianz der Netzlast in DE beträgt: {varianz}\n")
+    std_DE = np.std(data[last_spalte])
+    print(f"Die std-Abweichung der Netzlast in DE beträgt: {std_DE}\n")
 
+    mean_DE = np.mean(data[last_spalte])
+    print(f"Der Mittelwert der Netzlast in DE beträgt: {mean_DE: .2f} \n")
+
+    median_DE = np.median(data[last_spalte])
+    print(f"Der Median der Netzlast in DE beträgt: {median_DE: .2f}\n")
+
+    vk_DE = (std_DE / mean_DE) * 100
+    print(f"Die Variationskoefizient (in %) der Netzlast in DE beträgt: {vk_DE: .2f}%\n")
+
+    # Größten Wert in der Zielspalte anzeigen
+    max_value = data[last_spalte].max()
+    print(f"Der größte Wert in der Spalte {last_spalte} von DE ist: {max_value}\n")
+
+    # Größten Wert in der Zielspalte anzeigen
+    min_value = data[last_spalte].min()
+    print(f"Der kleinste Wert in der Spalte {last_spalte} von DE ist: {min_value}")
+
+"""
+    #### 50 Hertz und TransNetBW
     varianz = data_50Hertz[last_spalte].var()
     print(f"Die Varianz der Netzlast 50 Hertz beträgt: {varianz}")
     varianz = data_TransNetBW[last_spalte].var()
@@ -123,5 +149,5 @@ if __name__ == "__main__":
     min_value = data_TransNetBW[last_spalte].min()
     print(f"Der kleinste Wert in der Spalte {last_spalte} von TransNetBW ist: {min_value}")
 
-
+"""
 
