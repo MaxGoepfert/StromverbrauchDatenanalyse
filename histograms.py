@@ -29,11 +29,48 @@ def cleanData(data, zeit_spalte, last_spalte):
     return df_verbrauch
 
 
-
+""""
 def plotHistogram(data, zeit_spalte, last_spalte, title):
     data = cleanData(data, zeit_spalte, last_spalte)
     plt.figure(figsize=(10,8))
     sns.histplot(data=data, x=last_spalte, bins=50, kde=True, color='blue', label=title)
+    plt.title('Verteilung des Stromverbrauchs in Deutschland (Tageweise)')
+    plt.xlabel('Stromverbrauch (in Mio. MWh)')
+    plt.ylabel('Häufigkeit')
+    plt.legend()
+    plt.show()
+"""
+
+
+def plotHistogram(data, zeit_spalte, last_spalte, title):
+    # Daten vorbereiten
+    data = cleanData(data, zeit_spalte, last_spalte)
+    plt.figure(figsize=(10, 8))
+
+    # Histogramm berechnen (um Bin-Breite zu ermitteln)
+    counts, bin_edges, _ = plt.hist(data[last_spalte], bins=50, alpha=0)  # Alpha=0, um das Histogramm unsichtbar zu machen
+
+    # Bin-Breite berechnen
+    bin_width = bin_edges[1] - bin_edges[0]
+    print(f"Bin-Breite: {bin_width: .3f}MWh")
+
+    # Modus berechnen
+    max_bin_index = np.argmax(counts)  # Index des Bins mit der höchsten Häufigkeit
+    mode = (bin_edges[max_bin_index] + bin_edges[max_bin_index + 1]) / 2 # Mitte des Modus-Bins
+    print(f"Modus: {mode / 1e6: .3f} Mio. MWh")
+    print(f"Anfangswert des Modus-Bin: {bin_edges[max_bin_index] / 1e6: .3f}Mio. MWh, bis Endwert: {bin_edges[max_bin_index + 1] / 1e6: .3f}Mio. MWh")
+
+    # Median berechnen
+    median = np.median(data[last_spalte])
+
+    # Mittelwert berechnen
+    mean = np.mean(data[last_spalte])
+
+    # Histogramm zeichnen
+    sns.histplot(data=data, x=last_spalte, bins=50, kde=True, color='#5050FF', label=title)
+    plt.axvline(x=mode, color='darkgreen', linestyle='-', linewidth=2, label=f'Modus: {mode / 1e6:.3f}')
+    plt.axvline(x=median, color='red', linestyle='-', linewidth=2, label=f'Median: {median / 1e6:.3f}')
+    plt.axvline(x=mean, color='orange', linestyle='-', linewidth=2, label=f'Mittelwert: {mean / 1e6:.3f}')
     plt.title('Verteilung des Stromverbrauchs in Deutschland (Tageweise)')
     plt.xlabel('Stromverbrauch (in Mio. MWh)')
     plt.ylabel('Häufigkeit')

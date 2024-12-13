@@ -76,18 +76,18 @@ if __name__ == "__main__":
     print(data_50Hertz.columns)
 
     # Clean data
-    #cleanData(data_50Hertz, zeit_spalte, last_spalte)
-    #cleanData(data_TransNetBW, zeit_spalte, last_spalte)
-    cleanData(data, zeit_spalte, last_spalte)
+    cleanData(data_50Hertz, zeit_spalte, last_spalte)
+    cleanData(data_TransNetBW, zeit_spalte, last_spalte)
+    #cleanData(data, zeit_spalte, last_spalte)
     #plot data
-    plotData(data,zeit_spalte, last_spalte, "Stromverbrauch Deutschland 2017-2023")
+    #plotData(data,zeit_spalte, last_spalte, "Stromverbrauch Deutschland 2017-2023")
     #plotData(data_50Hertz,zeit_spalte, last_spalte, "50Hertz")
     #plotData(data_TransNetBW,zeit_spalte, last_spalte, "TransNetBW")
 
     #movingAvg(data_50Hertz, zeit_spalte, last_spalte, 'Gleitender Durchschnitt 50Hertz')
     #movingAvg(data_TransNetBW, zeit_spalte, last_spalte, 'Gleitender Durchschnitt TransNetBW')
     #movingAvg(data, zeit_spalte, last_spalte, 'Gleitender Durchschnitt Deutschland')
-
+    """
     varianz = data[last_spalte].var()
     print(f"Die Varianz der Netzlast in DE beträgt: {varianz}\n")
     std_DE = np.std(data[last_spalte])
@@ -110,8 +110,8 @@ if __name__ == "__main__":
     min_value = data[last_spalte].min()
     print(f"Der kleinste Wert in der Spalte {last_spalte} von DE ist: {min_value}")
 
-"""
-    #### 50 Hertz und TransNetBW
+    """
+    #    50 Hertz und TransNetBW
     varianz = data_50Hertz[last_spalte].var()
     print(f"Die Varianz der Netzlast 50 Hertz beträgt: {varianz}")
     varianz = data_TransNetBW[last_spalte].var()
@@ -149,5 +149,5 @@ if __name__ == "__main__":
     min_value = data_TransNetBW[last_spalte].min()
     print(f"Der kleinste Wert in der Spalte {last_spalte} von TransNetBW ist: {min_value}")
 
-"""
+
 
