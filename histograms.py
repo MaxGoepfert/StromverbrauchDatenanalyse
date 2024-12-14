@@ -67,27 +67,27 @@ def plotHistogram(data, zeit_spalte, last_spalte, title):
     mean = np.mean(data[last_spalte])
 
     # Histogramm zeichnen
-    sns.histplot(data=data, x=last_spalte, bins=50, kde=True, color='#5050FF', label=title)
-    plt.axvline(x=mode, color='darkgreen', linestyle='-', linewidth=2, label=f'Modus: {mode / 1e6:.3f}')
-    plt.axvline(x=median, color='red', linestyle='-', linewidth=2, label=f'Median: {median / 1e6:.3f}')
-    plt.axvline(x=mean, color='orange', linestyle='-', linewidth=2, label=f'Mittelwert: {mean / 1e6:.3f}')
-    plt.title('Verteilung des Stromverbrauchs in Deutschland (Tageweise)')
-    plt.xlabel('Stromverbrauch (in Mio. MWh)')
+    sns.histplot(data=data, x=last_spalte, bins=50, kde=True, color='#5050FF', label='Anzahl Bins: 50')
+    plt.axvline(x=mode, color='darkgreen', linestyle='-', linewidth=1.5, label=f'Modus: {mode:.2f}')
+    plt.axvline(x=median, color='red', linestyle='-', linewidth=1.5, label=f'Median: {median:.2f}')
+    plt.axvline(x=mean, color='orange', linestyle='-', linewidth=1.5, label=f'Mittelwert: {mean:.2f}')
+    plt.title(title)
+    plt.xlabel('Stromverbrauch (in MWh)')
     plt.ylabel('Häufigkeit')
     plt.legend()
     plt.show()
 
 
 # call funtion with data
-#dataPath50Hertz = 'data/Realisierter_Stromverbrauch_2017_2023_Tag_50Hertz.csv'
-#dataPathBW = 'data/Realisierter_Stromverbrauch_2017_2023_Tag_BW.csv'
+dataPath50Hertz = 'data/Realisierter_Stromverbrauch_2017_2024_Tag_50Hertz.csv'
+dataPathBW = 'data/Realisierter_Stromverbrauch_2017_2024_Tag_BW.csv'
 dataPath_DE = 'data/Realisierter_Stromverbrauch_2017-2024_Tag.csv'
-#data50Hertz = pd.read_csv(dataPath50Hertz, delimiter=';')
-#dataBW = pd.read_csv(dataPathBW, delimiter=';')
+data50Hertz = pd.read_csv(dataPath50Hertz, delimiter=';')
+dataBW = pd.read_csv(dataPathBW, delimiter=';')
 dataDE = pd.read_csv(dataPath_DE, delimiter=';')
 zeit_spalte = 'Datum von'
 last_spalte = 'Gesamt (Netzlast) [MWh] Berechnete Auflösungen'
-#plotHistogram(data50Hertz,zeit_spalte, last_spalte, '50Hertz')
-#plotHistogram(dataBW,zeit_spalte, last_spalte, 'TransNetBW')
-plotHistogram(dataDE,zeit_spalte, last_spalte, 'Anzahl Bins: 50')
+plotHistogram(data50Hertz,zeit_spalte, last_spalte, 'Verteilung des Stromverbrauchs 50Hertz (Tageweise)')
+plotHistogram(dataBW,zeit_spalte, last_spalte, 'Verteilung des Stromverbrauchs TransNetBW (Tageweise)')
+#plotHistogram(dataDE,zeit_spalte, last_spalte, 'Verteilung des Stromverbrauchs in Deutschland (Tageweise)')
 

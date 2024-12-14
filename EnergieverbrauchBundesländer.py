@@ -130,6 +130,8 @@ def correlation(dataset1, dataset2, zeit_spalte, last_spalte, zeit_spalte_indust
     dataset2 = dataset2.sort_values(by=zeit_spalte_industrie, ascending=True)
     dataset2.set_index(zeit_spalte_industrie, inplace=True)
 
+    dataset1[last_spalte] = dataset1[last_spalte] / 1e6
+    dataset2[verbrauch_spalte] = dataset2[verbrauch_spalte] / 1e6
     print(dataset1[last_spalte])
     print(dataset2[verbrauch_spalte])
 
@@ -142,8 +144,8 @@ def correlation(dataset1, dataset2, zeit_spalte, last_spalte, zeit_spalte_indust
     plt.figure(figsize=(10, 8))
     plt.scatter(dataset1[last_spalte], dataset2[verbrauch_spalte],  alpha=0.5, color='blue')
     plt.title(title)
-    plt.xlabel("Stromverbrauch Industrie (MWh)")
-    plt.ylabel("Stromverbrauch Gesamt (MWh)")
+    plt.xlabel("Stromverbrauch Gesamt pro Jahr (in Mio. MWh)")
+    plt.ylabel("Stromverbrauch Industrie pro Jahr (in Mio. MWh)")
     plt.grid(True)
     plt.show()
 
@@ -165,8 +167,8 @@ subsetBW = data[data['Bundesland'] == 'Baden-W�rttemberg'].reset_index()
 print(subsetBW)
 
 # Korrelation berechnen und plotten
-correlation(data50Hertz, data_Industrie50Hertz, zeit_spalte, last_spalte, zeit_spalte_industrie, verbrauch_spalte, "Korrelation zwischen 50Hertz und Industrie")
-correlation(dataBW, subsetBW, zeit_spalte, last_spalte, zeit_spalte_industrie, verbrauch_spalte, "Korrelation zwischen TransNetBW und Industrie")
+correlation(data50Hertz, data_Industrie50Hertz, zeit_spalte, last_spalte, zeit_spalte_industrie, verbrauch_spalte, "Korrelation des Jahresstromverbrauchs zwischen 50Hertz und Industrie")
+correlation(dataBW, subsetBW, zeit_spalte, last_spalte, zeit_spalte_industrie, verbrauch_spalte, "Korrelation des Jahresstromverbrauchs zwischen TransNetBW und Industrie")
 
 ### Anteil des Industriestromverbrauchs an Gesamt
 

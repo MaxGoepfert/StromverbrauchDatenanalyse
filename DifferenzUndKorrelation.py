@@ -25,8 +25,8 @@ def cleanData(data, zeit_spalte, last_spalte):
 
 if __name__ == "__main__":
     #dataPath = "data/Realisierter_Stromverbrauch_201701010000_202301010000_Tag.csv"
-    dataPath2 = "data/Realisierter_Stromverbrauch_2017_2023_Tag_50Hertz.csv"
-    dataPath3 = "data/Realisierter_Stromverbrauch_2017_2023_Tag_BW.csv"
+    dataPath2 = "data/Realisierter_Stromverbrauch_2017_2024_Tag_50Hertz.csv"
+    dataPath3 = "data/Realisierter_Stromverbrauch_2017_2024_Tag_BW.csv"
 
     #data = pd.read_csv(dataPath, delimiter=';')
     data_50Hertz = pd.read_csv(dataPath2, delimiter=';')
@@ -76,7 +76,7 @@ correlation = data_50Hertz[last_spalte].corr(data_TransNetBW[last_spalte])
 print(f"Korrelation zwischen 50Hertz und TransNetBW: {correlation:.2f}")
 
 # Streudiagramm der Stromverbrauchswerte
-plt.figure(figsize=(8, 6))
+plt.figure(figsize=(10, 8))
 plt.scatter(data_50Hertz[last_spalte], data_TransNetBW[last_spalte], alpha=0.5, color='green')
 plt.title("Zusammenhang zwischen 50Hertz und TransNetBW")
 plt.xlabel("Stromverbrauch 50Hertz (MWh)")

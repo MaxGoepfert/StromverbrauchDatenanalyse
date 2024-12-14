@@ -38,14 +38,14 @@ def plotBoxplot(data, zeit_spalte, last_spalte, title):
     scaler = StandardScaler()
     df_verbrauch['standardized_last_spalte'] = scaler.fit_transform(df_verbrauch[[last_spalte]])
     ###
-
+    """
     # dayOfWeek
     df_verbrauch['Wochentage'] = df_verbrauch.index.dayofweek
     fig, ax = plt.subplots(figsize=(10,8))
     sns.boxplot(data=df_verbrauch, x='Wochentage', y='standardized_last_spalte', palette='Blues')
     ax.set_title(title)
     plt.xlabel('Wochentage (Montag-Sonntag)')
-    plt.ylabel('Stromverbrauch (standardisiert))')
+    plt.ylabel('Stromverbrauch (standardisiert)')
     plt.show()
     """
     # month
@@ -57,22 +57,24 @@ def plotBoxplot(data, zeit_spalte, last_spalte, title):
     plt.xlabel('Monate (Januar-Dezember)')
     plt.ylabel('Stromverbrauch (standardisiert)')
     plt.show()
-    """
+
 
 
 # call funtion with data
-dataPath50Hertz = 'data/Realisierter_Stromverbrauch_2017_2023_Tag_50Hertz.csv'
-dataPathBW = 'data/Realisierter_Stromverbrauch_2017_2023_Tag_BW.csv'
+dataPath50Hertz = 'data/Realisierter_Stromverbrauch_2017_2024_Tag_50Hertz.csv'
+dataPathBW = 'data/Realisierter_Stromverbrauch_2017_2024_Tag_BW.csv'
 dataPath_DE = 'data/Realisierter_Stromverbrauch_2017-2024_Tag.csv'
 data50Hertz = pd.read_csv(dataPath50Hertz, delimiter=';')
 dataBW = pd.read_csv(dataPathBW, delimiter=';')
 data_DE = pd.read_csv(dataPath_DE, delimiter=';')
 zeit_spalte = 'Datum von'
 last_spalte = 'Gesamt (Netzlast) [MWh] Berechnete Auflösungen'
-plotBoxplot(data50Hertz, zeit_spalte, last_spalte, 'Stromverbrauch der Wochentage für 50Hertz')
-plotBoxplot(dataBW, zeit_spalte, last_spalte, 'Stromverbrauch der Wochentage für TransNetBW')
+plotBoxplot(data50Hertz, zeit_spalte, last_spalte, 'Stromverbrauch der Monate für 50Hertz')
+plotBoxplot(dataBW, zeit_spalte, last_spalte, 'Stromverbrauch der Monate für TransNetBW')
 #plotBoxplot(data_DE, zeit_spalte, last_spalte, 'Stromverbrauch der Monate in Deutschland')
 # monatliche Korrelation
+
+### Klammer fehlt
 
 """
 # Monatsspalte hinzufügen
