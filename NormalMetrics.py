@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+
+
 #import matplotlib # for mac
 #plt.use('TkAgg')  # Stabileres Backend für macOS
 
@@ -19,9 +22,9 @@ def plotData(dataset, zeit_spalte, last_spalte, title):
     plt.plot(dataset[zeit_spalte], dataset[last_spalte], label="Gesamtlast Stromverbrauch", color='blue')
 
     # Achsentitel und Plot-Titel
-    plt.xlabel("Zeit (Tage)")
-    plt.ylabel("Gesamtlast Strom (in Mio. MWh)")  # Einheit anpassen, falls bekannt
-    plt.title(title)
+    plt.xlabel("Zeit")
+    plt.ylabel("Gesamtlast Strom (standardisiert)")  # Einheit anpassen, falls bekannt
+    plt.title(f"Stromverbrauch pro Tag in der Regelzone {title}")
 
     # Legende und Gitter
     plt.legend()
@@ -78,14 +81,23 @@ if __name__ == "__main__":
     # Clean data
     cleanData(data_50Hertz, zeit_spalte, last_spalte)
     cleanData(data_TransNetBW, zeit_spalte, last_spalte)
+
+
+    ### Standartisieren für Vergleich
+    scaler = StandardScaler()
+    data_50Hertz['standardized_last_spalte'] = scaler.fit_transform(data_50Hertz[[last_spalte]])
+    data_TransNetBW['standardized_last_spalte'] = scaler.fit_transform(data_TransNetBW[[last_spalte]])
+    ###
+    standard_spalte = 'standardized_last_spalte'
+
     #cleanData(data, zeit_spalte, last_spalte)
     #plot data
     #plotData(data,zeit_spalte, last_spalte, "Stromverbrauch Deutschland 2017-2023")
-    #plotData(data_50Hertz,zeit_spalte, last_spalte, "50Hertz")
-    #plotData(data_TransNetBW,zeit_spalte, last_spalte, "TransNetBW")
+    plotData(data_50Hertz,zeit_spalte, standard_spalte, "50Hertz")
+    plotData(data_TransNetBW,zeit_spalte, standard_spalte, "TransNetBW")
 
-    movingAvg(data_50Hertz, zeit_spalte, last_spalte, 'Gleitender Durchschnitt 50Hertz')
-    movingAvg(data_TransNetBW, zeit_spalte, last_spalte, 'Gleitender Durchschnitt TransNetBW')
+    #movingAvg(data_50Hertz, zeit_spalte, last_spalte, 'Gleitender Durchschnitt 50Hertz')
+    #movingAvg(data_TransNetBW, zeit_spalte, last_spalte, 'Gleitender Durchschnitt TransNetBW')
     #movingAvg(data, zeit_spalte, last_spalte, 'Gleitender Durchschnitt Deutschland')
     """
     varianz = data[last_spalte].var()

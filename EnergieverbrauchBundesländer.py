@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 def convert_to_mwh(value):
     #Konvertiert einen Wert von MJ in MWh.
@@ -161,14 +162,19 @@ last_spalte = 'Gesamt (Netzlast) [MWh] Berechnete Auflösungen'
 
 # Industrie Jahreswert 50Hertz
 data_Industrie50Hertz = getSumIndustrie(data, bundeslaender50Hertz, zeit_spalte_industrie, verbrauch_spalte)
-
+print(data_Industrie50Hertz)
+mean_Industrie_50Hertz = np.mean(data_Industrie50Hertz[verbrauch_spalte])
+print(f"Durchschnitt Stromverbrauch der Industrie in Regelzone 50Hertz: {mean_Industrie_50Hertz / 1e6: .2f} Mio. MWh")
 # Industrie Jahreswert TransNetBW
 subsetBW = data[data['Bundesland'] == 'Baden-W�rttemberg'].reset_index()
+mean_Industrie_TransNetBW = np.mean(subsetBW[verbrauch_spalte])
 print(subsetBW)
+print(f"Durchschnitt Stromverbrauch der Industrie in Regelzone TransNetBW: {mean_Industrie_TransNetBW / 1e6: .2f} Mio. MWh")
+
 
 # Korrelation berechnen und plotten
-correlation(data50Hertz, data_Industrie50Hertz, zeit_spalte, last_spalte, zeit_spalte_industrie, verbrauch_spalte, "Korrelation des Jahresstromverbrauchs zwischen 50Hertz und Industrie")
-correlation(dataBW, subsetBW, zeit_spalte, last_spalte, zeit_spalte_industrie, verbrauch_spalte, "Korrelation des Jahresstromverbrauchs zwischen TransNetBW und Industrie")
+#correlation(data50Hertz, data_Industrie50Hertz, zeit_spalte, last_spalte, zeit_spalte_industrie, verbrauch_spalte, "Korrelation des Jahresstromverbrauchs zwischen 50Hertz und Industrie")
+#correlation(dataBW, subsetBW, zeit_spalte, last_spalte, zeit_spalte_industrie, verbrauch_spalte, "Korrelation des Jahresstromverbrauchs zwischen TransNetBW und Industrie")
 
 ### Anteil des Industriestromverbrauchs an Gesamt
 
@@ -189,8 +195,8 @@ def quotaIndustrie(dataset1, dataset2, zeit_spalte, last_spalte, zeit_spalte_ind
     dataset2 = dataset2.sort_values(by=zeit_spalte_industrie, ascending=True)
     dataset2.set_index(zeit_spalte_industrie, inplace=True)
 
-    print(dataset1[last_spalte])
-    print(dataset2[verbrauch_spalte])
+    #print(dataset1[last_spalte])
+    #print(dataset2[verbrauch_spalte])
 
     dataset1['Anteil Industriestromverbrauch'] = dataset2[verbrauch_spalte] / dataset1[last_spalte]
 
