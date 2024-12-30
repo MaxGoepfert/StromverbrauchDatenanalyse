@@ -18,3 +18,10 @@ df['holiday_name'] = df['date'].map(de_holidays)  # Gibt den Namen des Feiertags
 
 # Ausgabe
 print(df.tail(50))
+
+def add_holidays(df):
+    de_holidays = holidays.Germany()  # geht auch für Bundesländer: z.B. holidays.Germany(state='BY') für Bayern
+    # Feature: Ist der Tag ein Feiertag?
+    df['is_holiday'] = df['date'].apply(lambda x: x in de_holidays)  # funktioniert irgendwie nicht mit .isin(de_holidays), deswegen extra lambda-Funktion
+
+
