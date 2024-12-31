@@ -2,11 +2,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import xgboost as xgb
 import numpy as np
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
 import holidays
 
 pd.set_option('display.max_columns', 50)
-pd.set_option('display.max_colwidth', 500)
+pd.set_option('display.max_colwidth', 2000)
 
 def cleanData(data, zeit_spalte, last_spalte):
     dataset = data.copy()
@@ -29,67 +29,79 @@ def cleanData(data, zeit_spalte, last_spalte):
 
     return dataset
 
+# Lags hinzufügen
+def add_lag(df):
+    dictOfLastSpalte = df[last_spalte].to_dict()
+    # zieht von Datum ein Jahr ab und gibt Wert von diesem Datum zurück
+    df['lag_year'] = (df.index - pd.Timedelta('364 days')).map(dictOfLastSpalte)
+    #df['lag_2year'] = (df.index - pd.Timedelta('728 days')).map(dictOfLastSpalte)
+    #df['lag_3year'] = (df.index - pd.Timedelta('1092 days')).map(dictOfLastSpalte)
+    df['lag_week'] = (df.index - pd.Timedelta('7 days')).map(dictOfLastSpalte)
+    df['lag_day_before'] = (df.index - pd.Timedelta('1 days')).map(dictOfLastSpalte)
+    # gleitenden Durchschnitt hinzufügen
+    df['rolling_mean_week'] = df[last_spalte].rolling(window=7).mean()
+    df['rolling_mean'] = df[last_spalte].rolling(window=30).mean()
+    return df
+
+# Feiertage hinzufügen
+def add_holidays(df):
+    de_holidays = holidays.Germany()
+    # Feature: Ist der Tag ein Feiertag?
+    df['is_holiday'] = df.index.to_series().apply(lambda x: x in de_holidays)
+    return df
+
+### Wetterdaten hinzufügen (TO-DO)
+
+# Jahreszeiten hinzufügen (ungefähr per Monate)
+def add_seasons(month):
+    if month in [12, 1, 2]:
+        return 1 # winter
+    elif month in [3, 4, 5]:
+        return 2 # Frühling
+    elif month in [6, 7, 8]:
+        return 3 # Sommer
+    else:
+        return 4 # Herbst
+
+### Features
+def createFeatures(df_verbrauch):
+    df_verbrauch = df_verbrauch.copy()
+    df_verbrauch['Day_of_year'] = df_verbrauch.index.day_of_year
+    df_verbrauch['Weekday'] = df_verbrauch.index.weekday
+    df_verbrauch['Month'] = df_verbrauch.index.month
+    df_verbrauch['Season'] = df_verbrauch.index.month.map(add_seasons)
+    df_verbrauch['is_weekend'] = df_verbrauch.index.weekday.isin([5, 6])  # Samstag (5) und Sonntag (6)
+    # Lags hinzufügen
+    df_verbrauch = add_lag(df_verbrauch)
+    # Feiertage hinzufügen
+    df_verbrauch = add_holidays(df_verbrauch)
+
+    return df_verbrauch
+
 if __name__ == "__main__":
-    dataPath = "/home/maximiliangoepfert/PycharmProjects/StromverbrauchDatenanalyse/data/Realisierter_Stromverbrauch_2017-2024_Tag.csv"
-    #dataPath2 = "data/Realisierter_Stromverbrauch_2017_2024_Tag_50Hertz.csv"
-    #dataPath3 = "data/Realisierter_Stromverbrauch_2017_2024_Tag_BW.csv"
+    dataPath = "data/Realisierter_Stromverbrauch_2017-2024_Tag.csv"
+    dataPath2 = "data/Realisierter_Stromverbrauch_2017_2024_Tag_50Hertz.csv"
+    dataPath3 = "data/Realisierter_Stromverbrauch_2017_2024_Tag_BW.csv"
 
     data = pd.read_csv(dataPath, delimiter=';')
-    #data_50Hertz = pd.read_csv(dataPath2, delimiter=';')
-    #data_TransNetBW= pd.read_csv(dataPath3, delimiter=';')
+    data_50Hertz = pd.read_csv(dataPath2, delimiter=';')
+    data_TransNetBW = pd.read_csv(dataPath3, delimiter=';')
     zeit_spalte = "Datum von"
     last_spalte = "Gesamt (Netzlast) [MWh] Berechnete Auflösungen"
 
     ### Clean data
-    #cleanData(data_50Hertz, zeit_spalte, last_spalte)
-    #cleanData(data_TransNetBW, zeit_spalte, last_spalte)
+    #dataset = cleanData(data_50Hertz, zeit_spalte, last_spalte)
+    #dataset = cleanData(data_TransNetBW, zeit_spalte, last_spalte)
     dataset = cleanData(data, zeit_spalte, last_spalte)
 
-
-    # Lags (optional)
-    def add_lag(df):
-        dictOfLastSpalte = df[last_spalte].to_dict()
-        # zieht von Datum ein Jahr ab und gibt Wert von diesem Datum zurück
-        df['lag_year'] = (df.index - pd.Timedelta('364 days')).map(dictOfLastSpalte)
-        df['lag_week'] = (df.index - pd.Timedelta('7 days')).map(dictOfLastSpalte)
-        df['lag_day_before'] = (df.index - pd.Timedelta('1 days')).map(dictOfLastSpalte)
-        # oder zB
-        #df['shift'] = df.index.shift(7)
-        df['rolling_mean_week'] = df[last_spalte].rolling(window=7).mean()
-        df['rolling_mean'] = df[last_spalte].rolling(window=30).mean()
-        return df
-
-    # Feiertage hinzufügen (TO-DO)
-    def add_holidays(df):
-        de_holidays = holidays.Germany()
-        # Feature: Ist der Tag ein Feiertag?
-        df['is_holiday'] = df.index.to_series().apply(lambda x: x in de_holidays)
-        return df
-
-        # Wetterdaten hinzufügen (TO-DO)
-
-    ### Features
-    def createFeatures(df_verbrauch):
-        df_verbrauch = df_verbrauch.copy()
-        df_verbrauch['Wochentag'] = df_verbrauch.index.weekday
-        df_verbrauch['Monat'] = df_verbrauch.index.month
-        df_verbrauch['Quartal'] = df_verbrauch.index.quarter
-        df_verbrauch['is_weekend'] = df_verbrauch.index.weekday.isin([5, 6])  # Samstag (5) und Sonntag (6)
-        # Lags hinzufügen
-        df_verbrauch = add_lag(df_verbrauch)
-        # Feiertage hinzufügen
-        df_verbrauch = add_holidays(df_verbrauch)
-
-        return df_verbrauch
-
-
+    ### Features und Target
     dataset = createFeatures(dataset)
     print(dataset.tail(20))
     print(dataset.columns)
-    features = ['Wochentag', 'Monat', 'Quartal',
-                'lag_year','lag_week', 'lag_day_before',
+    features = ['Day_of_year', 'Weekday', 'Month', 'Season',
+                'lag_year', 'lag_week', 'lag_day_before',
                 'is_holiday', 'is_weekend',
-                'rolling_mean', 'rolling_mean_week']
+                'rolling_mean', 'rolling_mean_week']  # TO DO: Wetterdaten,
     target = last_spalte
 
     ### Train and Test Split
@@ -126,7 +138,7 @@ if __name__ == "__main__":
         n_estimators=3000,
         reg_alpha=1,
         reg_lambda=5,
-        early_stopping_rounds=20,
+        early_stopping_rounds=50,
         objective='reg:squarederror'
         )
 
@@ -136,7 +148,13 @@ if __name__ == "__main__":
 
     ### Evaluate
     y_pred = reg.predict(X_test)
-    score = np.sqrt(mean_squared_error(y_test, y_pred))
+    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+    mae = mean_absolute_error(y_test, y_pred)
+    mape = mean_absolute_percentage_error(y_test, y_pred)
+    print(f"Evaluation: Root mean squared error is: {rmse: .3f}")
+    print(f"Evaluation: Mean absolute error is: {mae: .3f}")
+    print(f"Evaluation: Mean absolute percentage error is: {mape * 100: .3f} %")
+
 
     ### Save model for later
     #reg.save_model('Vorhersage/modelXGB.json')
