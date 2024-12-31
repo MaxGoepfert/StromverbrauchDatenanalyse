@@ -1,5 +1,4 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import xgboost as xgb
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
