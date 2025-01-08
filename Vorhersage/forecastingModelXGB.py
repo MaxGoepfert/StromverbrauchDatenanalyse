@@ -3,6 +3,8 @@ import xgboost as xgb
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
 import holidays
+from Klima import get_weather_data
+from config import BW_STROM_DATA_PATH, HERTZ_STROM_DATA_PATH, DE_STROM_DATA_PATH
 
 pd.set_option('display.max_columns', 50)
 pd.set_option('display.max_colwidth', 2000)
@@ -33,8 +35,6 @@ def add_lag(df):
     dictOfLastSpalte = df[last_spalte].to_dict()
     # zieht von Datum ein Jahr ab und gibt Wert von diesem Datum zurück
     df['lag_year'] = (df.index - pd.Timedelta('364 days')).map(dictOfLastSpalte)
-    #df['lag_2year'] = (df.index - pd.Timedelta('728 days')).map(dictOfLastSpalte)
-    #df['lag_3year'] = (df.index - pd.Timedelta('1092 days')).map(dictOfLastSpalte)
     df['lag_week'] = (df.index - pd.Timedelta('7 days')).map(dictOfLastSpalte)
     df['lag_day_before'] = (df.index - pd.Timedelta('1 days')).map(dictOfLastSpalte)
     # gleitenden Durchschnitt hinzufügen
@@ -78,13 +78,10 @@ def createFeatures(df_verbrauch):
     return df_verbrauch
 
 if __name__ == "__main__":
-    dataPath = "data/Realisierter_Stromverbrauch_2017-2024_Tag.csv"
-    dataPath2 = "data/Realisierter_Stromverbrauch_2017_2024_Tag_50Hertz.csv"
-    dataPath3 = "data/Realisierter_Stromverbrauch_2017_2024_Tag_BW.csv"
 
-    data = pd.read_csv(dataPath, delimiter=';')
-    data_50Hertz = pd.read_csv(dataPath2, delimiter=';')
-    data_TransNetBW = pd.read_csv(dataPath3, delimiter=';')
+    data = pd.read_csv(DE_STROM_DATA_PATH, delimiter=';')
+    data_50Hertz = pd.read_csv(HERTZ_STROM_DATA_PATH, delimiter=';')
+    data_TransNetBW = pd.read_csv(BW_STROM_DATA_PATH, delimiter=';')
     zeit_spalte = "Datum von"
     last_spalte = "Gesamt (Netzlast) [MWh] Berechnete Auflösungen"
 
@@ -93,21 +90,30 @@ if __name__ == "__main__":
     #dataset = cleanData(data_TransNetBW, zeit_spalte, last_spalte)
     dataset = cleanData(data, zeit_spalte, last_spalte)
 
+    ### merge
+    data_klima = get_weather_data()
+    # DataFrames: dataset1, dataset2
+    dataset = pd.merge(dataset, data_klima, left_index=True, right_index=True,
+                      how='inner')  # nur gemeinsame Datumswerte zur Sicherheit
+
     ### Features und Target
     dataset = createFeatures(dataset)
-    print(dataset.tail(20))
+    #print(dataset.tail(20))
     print(dataset.columns)
     features = ['Day_of_year', 'Weekday', 'Month', 'Season',
                 'lag_year', 'lag_week', 'lag_day_before',
                 'is_holiday', 'is_weekend',
-                'rolling_mean', 'rolling_mean_week']  # TO DO: Wetterdaten,
+                'rolling_mean', 'rolling_mean_week', 'TMK',]
+    # TO DO: Wetterdaten
     target = last_spalte
 
     ### Train and Test Split
 
     # so oder einfach die zwei Datensätze nehmen
-    train = dataset.loc[dataset.index < '01-01-2023']
-    test = dataset.loc[dataset.index >= '01-01-2023']
+    train = dataset.loc[dataset.index < '2023-01-01']
+    test = dataset.loc[dataset.index >= '2023-01-01']
+    print(train.head())
+    print(test.head())
     # plot
     """
     fig, ax = plt.subplots(figsize=(12, 6))
@@ -121,13 +127,13 @@ if __name__ == "__main__":
     plt.show()
     """
     ### Train model
-    X_train = train[features]
+    x_train = train[features]
     y_train = train[target]
 
-    X_test = test[features]
+    x_test = test[features]
     y_test = test[target]
 
-    reg = xgb.XGBRegressor(
+    model = xgb.XGBRegressor(
         max_depth=8,
         min_child_weight=10,
         gamma=0.3,
@@ -141,12 +147,10 @@ if __name__ == "__main__":
         objective='reg:squarederror'
         )
 
-    reg.fit(X_train, y_train,
-            eval_set=[(X_train, y_train), (X_test, y_test)],
-            verbose=50)
+    model.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_test, y_test)], verbose=50)
 
     ### Evaluate
-    y_pred = reg.predict(X_test)
+    y_pred = model.predict(x_test)
     rmse = np.sqrt(mean_squared_error(y_test, y_pred))
     mae = mean_absolute_error(y_test, y_pred)
     mape = mean_absolute_percentage_error(y_test, y_pred)
@@ -156,11 +160,11 @@ if __name__ == "__main__":
 
 
     ### Save model for later
-    #reg.save_model('Vorhersage/modelXGB.json')
+    #model.save_model('Vorhersage/modelXGB.json')
 
     ### and use again
-    #reg_new = xgb.XGBRegressor()
-    #reg_new.load_model('Vorhersage/modelXGB.json')
+    #model_new = xgb.XGBRegressor()
+    #model_new.load_model('Vorhersage/modelXGB.json')
 
 
 
