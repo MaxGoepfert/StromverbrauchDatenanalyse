@@ -6,9 +6,12 @@ def get_weather_data():
     data = pd.read_csv(WEATHER_DATA_PATH, delimiter=';')
 
     zeit_spalte = 'MESS_DATUM'
-    temp_avg_spalte = 'TMK'
-    temp_max_spalte = 'TXK'
-    temp_min_spalte = 'TNK'
+    temp_avg_spalte = 'TMK' # Tagesdurchschnittstemperatur
+    temp_max_spalte = 'TXK' # Tageshöchsttemperatur
+    temp_min_spalte = 'TNK' # Tagesniedrigsttemperatur
+    sonne_h_spalte = 'SDK' # Sonnenscheindauer (in Stunden)
+    niederschlag_spalte = 'RSK' # Menge an Niederschlag in mm
+    niederschlag_ordinal_spalte = 'RSKF' # Art/Stärke des Niederschlags 0-9 --> 0 trocken, 9 Extrem-ereignis
     dataset = data.copy()
     dataset.columns = dataset.columns.str.strip()
 
@@ -19,7 +22,8 @@ def get_weather_data():
     dataset.set_index(zeit_spalte, inplace=True)
     # Nur nötigen Zeitraum behalten
     dataset = dataset.loc[dataset.index >= '2017-01-01']
-    dataset = dataset[[temp_avg_spalte, temp_max_spalte, temp_min_spalte]]
+    dataset = dataset[[temp_avg_spalte, temp_max_spalte, temp_min_spalte,
+                       sonne_h_spalte, niederschlag_spalte, niederschlag_ordinal_spalte]]
 
     # Ersetzen von -999 durch NaN
     dataset.replace(-999, np.nan, inplace=True)
@@ -42,10 +46,10 @@ def get_weather_data():
 
 if __name__ == '__main__':
     df = get_weather_data()
-    """"
+    """
     # Plot erstellen
     plt.figure(figsize=(12, 6))  # Größe des Plots festlegen
-    plt.plot(df.index, df['TXK'], color='blue')
+    plt.plot(df.index, df['RSK'], color='blue')
 
     # Achsentitel und Plot-Titel
     plt.xlabel("Zeit (Tage)")
@@ -56,6 +60,7 @@ if __name__ == '__main__':
     # Plot anzeigen
     plt.show()
     """
+
 
 
 

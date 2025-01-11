@@ -1,10 +1,11 @@
 import pandas as pd
 import xgboost as xgb
 import numpy as np
+from matplotlib import pyplot as plt
 from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
 import holidays
 from Klima import get_weather_data
-from config import BW_STROM_DATA_PATH, HERTZ_STROM_DATA_PATH, DE_STROM_DATA_PATH
+from config import BW_STROM_DATA_PATH, HERTZ_STROM_DATA_PATH, DE_STROM_DATA_PATH, MODEL_PATH
 
 pd.set_option('display.max_columns', 50)
 pd.set_option('display.max_colwidth', 2000)
@@ -48,8 +49,17 @@ def add_holidays(df):
     # Feature: Ist der Tag ein Feiertag?
     df['is_holiday'] = df.index.to_series().apply(lambda x: x in de_holidays)
     return df
+def add_holidays_50Hertz(df):
+    for states in ["BB", "BE", "MV", "SN", "ST", "TH", "HH"]:
+        holiday_states = holidays.Germany(state=states)
+        df['is_holiday_' + states] = df.index.to_series().apply(lambda x: x in holiday_states)
+    return df
 
-### Wetterdaten hinzufügen (TO-DO)
+def add_holidays_TransNetBW(df):
+    de_holidays = holidays.Germany(state="BW")
+    # Feature: Ist der Tag ein Feiertag?
+    df['is_holiday'] = df.index.to_series().apply(lambda x: x in de_holidays)
+    return df
 
 # Jahreszeiten hinzufügen (ungefähr per Monate)
 def add_seasons(month):
@@ -74,7 +84,8 @@ def createFeatures(df_verbrauch):
     df_verbrauch = add_lag(df_verbrauch)
     # Feiertage hinzufügen
     df_verbrauch = add_holidays(df_verbrauch)
-
+    #df_verbrauch = add_holidays_TransNetBW(df_verbrauch)
+    #df_verbrauch = add_holidays_50Hertz(df_verbrauch)
     return df_verbrauch
 
 if __name__ == "__main__":
@@ -92,19 +103,29 @@ if __name__ == "__main__":
 
     ### merge
     data_klima = get_weather_data()
-    # DataFrames: dataset1, dataset2
     dataset = pd.merge(dataset, data_klima, left_index=True, right_index=True,
-                      how='inner')  # nur gemeinsame Datumswerte zur Sicherheit
+                   how='inner')  # nur gemeinsame Datumswerte zur Sicherheit
 
     ### Features und Target
     dataset = createFeatures(dataset)
     #print(dataset.tail(20))
     print(dataset.columns)
-    features = ['Day_of_year', 'Weekday', 'Month', 'Season',
-                'lag_year', 'lag_week', 'lag_day_before',
-                'is_holiday', 'is_weekend',
-                'rolling_mean', 'rolling_mean_week', 'TMK',]
-    # TO DO: Wetterdaten
+    features = [
+                'Weekday', 'Month',
+                'Season',
+                'Day_of_year',
+                'lag_year',
+                'lag_week',
+                'lag_day_before',
+                'is_holiday',
+                #'is_holiday_BB', 'is_holiday_BE', 'is_holiday_MV', 'is_holiday_SN', 'is_holiday_ST',
+                #'is_holiday_TH', 'is_holiday_HH',
+                'is_weekend',
+                'rolling_mean',
+                'rolling_mean_week',
+                'TMK', 'SDK'
+                ]
+
     target = last_spalte
 
     ### Train and Test Split
@@ -126,6 +147,7 @@ if __name__ == "__main__":
     ax.legend(['Training Set', 'Test Set'])
     plt.show()
     """
+
     ### Train model
     x_train = train[features]
     y_train = train[target]
@@ -133,19 +155,36 @@ if __name__ == "__main__":
     x_test = test[features]
     y_test = test[target]
 
+    # Deutschland
     model = xgb.XGBRegressor(
-        max_depth=8,
-        min_child_weight=10,
+        max_depth=8, # 8
+        min_child_weight=10, # 10
         gamma=0.3,
         subsample=0.7,
-        colsample_bytree=0.7,
-        learning_rate=0.005,  # gesenkt
-        n_estimators=3000,
+        colsample_bytree=0.7, # 0.7
+        learning_rate=0.005,  # 0.005
+        n_estimators=4000,
         reg_alpha=1,
         reg_lambda=5,
         early_stopping_rounds=50,
         objective='reg:squarederror'
         )
+    """
+    # 50Hertz
+    model = xgb.XGBRegressor(
+        max_depth=8,
+        min_child_weight=5,
+        gamma=0.3, # Regularisiert Split -> Gain muss groß genug sein
+        #subsample=0.8, #  Anteil Trainingsdaten pro Baum
+        colsample_bytree=0.8, # Anteil Features pro Baum
+        learning_rate=0.005,
+        n_estimators=4000, #  Anzahl Bäume
+        reg_alpha=1, # L1 Regularisierung (Feature Selection)
+        reg_lambda=5, # L2 Regularisierung
+        early_stopping_rounds=100,
+        objective='reg:squarederror'
+        )
+    """
 
     model.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_test, y_test)], verbose=50)
 
@@ -158,13 +197,32 @@ if __name__ == "__main__":
     print(f"Evaluation: Mean absolute error is: {mae: .3f}")
     print(f"Evaluation: Mean absolute percentage error is: {mape * 100: .3f} %")
 
+    # Feature Importance Plot
+    #xgb.plot_importance(model, importance_type='gain')  # Alternativ: 'gain', 'weight', 'cover'
+    #plt.show()
+
+    # Plotten
+    plt.figure(figsize=(16, 8))  # Setze die Größe des Plots
+
+    # Plot der tatsächlichen Werte
+    plt.plot(test.index, y_test, label='Tatsächliche Werte', color='blue')
+
+    # Plot der Vorhersagen
+    plt.plot(test.index, y_pred, label='Vorhersagen', color='red', linestyle='--')
+
+    # Achsen und Titel
+    #plt.ylim(0.5e6, 2e6)
+    plt.xlabel('Datum')
+    plt.ylabel('Stromverbrauch (in Mio MWh)')
+    plt.title('Tatsächliche Werte vs. Vorhersagen für 2023')
+    # Legende
+    plt.legend()
+    # Zeige das Diagramm an
+    plt.show()
 
     ### Save model for later
-    #model.save_model('Vorhersage/modelXGB.json')
+    #model.save_model(MODEL_PATH)
 
-    ### and use again
-    #model_new = xgb.XGBRegressor()
-    #model_new.load_model('Vorhersage/modelXGB.json')
 
 
 

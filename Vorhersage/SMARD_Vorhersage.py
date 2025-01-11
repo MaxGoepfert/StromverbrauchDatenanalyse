@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
-
+from config import DE_STROM_DATA_PATH, DE_STROM_PROG_DATA_PATH
+from matplotlib import pyplot as plt
 
 def cleanData(data, zeit_spalte, last_spalte):
     dataset = data.copy()
@@ -25,13 +26,11 @@ def cleanData(data, zeit_spalte, last_spalte):
     return dataset
 
 if __name__ == "__main__":
-    dataPathReal = "/home/maximiliangoepfert/PycharmProjects/StromverbrauchDatenanalyse/data/Realisierter_Stromverbrauch_2017-2024_Tag.csv"
-    dataPathProg = "/home/maximiliangoepfert/PycharmProjects/StromverbrauchDatenanalyse/data/Prognostizierter_Stromverbrauch_2023-2024_Tag.csv"
     zeit_spalte = "Datum von"
     last_spalte = "Gesamt (Netzlast) [MWh] Berechnete Auflösungen"
 
-    dataReal = pd.read_csv(dataPathReal, delimiter=';')
-    dataProg = pd.read_csv(dataPathProg, delimiter=';')
+    dataReal = pd.read_csv(DE_STROM_DATA_PATH, delimiter=';')
+    dataProg = pd.read_csv(DE_STROM_PROG_DATA_PATH, delimiter=';')
 
     ### Clean data
     datasetReal = cleanData(dataReal, zeit_spalte, last_spalte)
@@ -49,5 +48,25 @@ if __name__ == "__main__":
     print(f"Evaluation: Root mean squared error is: {rmse: .3f}")
     print(f"Evaluation: Mean absolute error is: {mae: .3f}")
     print(f"Evaluation: Mean absolute percentage error is: {mape * 100: .3f} %")
+
+    # Plotten
+    plt.figure(figsize=(16, 8))  # Setze die Größe des Plots
+
+    # Plot der tatsächlichen Werte
+    plt.plot(datasetReal.index, y_real, label='Tatsächliche Werte', color='blue')
+
+    # Plot der Vorhersagen
+    plt.plot(datasetProg.index, y_prog, label='SMARD Vorhersagen', color='red', linestyle='--')
+
+    # Achsen und Titel
+    plt.ylim(0.5e6, 2e6)
+    plt.xlabel('Datum')
+    plt.ylabel('Stromverbrauch (in Mio MWh)')
+    plt.title('Tatsächliche Werte vs. SMARD Vorhersagen für 2023')
+    # Legende
+    plt.legend()
+    # Zeige das Diagramm an
+    plt.show()
+
 
 
