@@ -1,20 +1,21 @@
+### TBD ####
+### In Progress ###
+
 import xgboost as xgb
 from matplotlib import pyplot as plt
 import pandas as pd
 from config import BW_STROM_DATA_PATH, HERTZ_STROM_DATA_PATH, DE_STROM_DATA_PATH, MODEL_PATH
 from forecastingModelXGB import cleanData, get_weather_data, createFeatures
 
-zeit_spalte = "Datum von"
-last_spalte = "Gesamt (Netzlast) [MWh] Berechnete Auflösungen"
-target = last_spalte
-features = ['Weekday', 'Month', 'Season', 'Day_of_year',
-            'lag_year', 'lag_week', 'lag_day_before',
-            'is_holiday', 'is_weekend',
-            'rolling_mean', 'rolling_mean_week',
-            'TMK', 'SDK']
-
-
 if __name__ == "__main__":
+    zeit_spalte = "Datum von"
+    last_spalte = "Gesamt (Netzlast) [MWh] Berechnete Auflösungen"
+    target = last_spalte
+    features = ['Weekday', 'Month', 'Season', 'Day_of_year',
+                'lag_year', 'lag_week', 'lag_day_before',
+                'is_holiday', 'is_weekend',
+                'rolling_mean', 'rolling_mean_week',
+                'TMK', 'SDK']
     model_new = xgb.XGBRegressor()
     model_new.load_model(MODEL_PATH)
 

@@ -123,7 +123,7 @@ if __name__ == "__main__":
                 'is_weekend',
                 'rolling_mean',
                 'rolling_mean_week',
-                'TMK', 'SDK'
+                'TMK','SDK'
                 ]
 
     target = last_spalte
@@ -133,6 +133,8 @@ if __name__ == "__main__":
     # so oder einfach die zwei Datensätze nehmen
     train = dataset.loc[dataset.index < '2023-01-01']
     test = dataset.loc[dataset.index >= '2023-01-01']
+    #test = dataset.loc[(dataset.index >= '2022-01-01') & (dataset.index < '2023-01-01')]
+
     print(train.head())
     print(test.head())
     # plot
@@ -214,7 +216,7 @@ if __name__ == "__main__":
     #plt.ylim(0.5e6, 2e6)
     plt.xlabel('Datum')
     plt.ylabel('Stromverbrauch (in Mio MWh)')
-    plt.title('Tatsächliche Werte vs. Vorhersagen für 2023')
+    plt.title('Tatsächliche Werte vs. Vorhersagen in Deutschland für 2023')
     # Legende
     plt.legend()
     # Zeige das Diagramm an
