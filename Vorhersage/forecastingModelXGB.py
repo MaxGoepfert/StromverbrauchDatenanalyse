@@ -36,11 +36,11 @@ def add_lag(df):
     dictOfLastSpalte = df[last_spalte].to_dict()
     # zieht von Datum ein Jahr ab und gibt Wert von diesem Datum zurück
     df['lag_year'] = (df.index - pd.Timedelta('364 days')).map(dictOfLastSpalte)
-    df['lag_week'] = (df.index - pd.Timedelta('7 days')).map(dictOfLastSpalte)
-    df['lag_day_before'] = (df.index - pd.Timedelta('1 days')).map(dictOfLastSpalte)
-    # gleitenden Durchschnitt hinzufügen
-    df['rolling_mean_week'] = df[last_spalte].rolling(window=7).mean()
-    df['rolling_mean'] = df[last_spalte].rolling(window=30).mean()
+    df['lag_2year'] = (df.index - pd.Timedelta('728 days')).map(dictOfLastSpalte)
+    df['lag_3year'] = (df.index - pd.Timedelta('1092 days')).map(dictOfLastSpalte)
+    ###gleitenden Durchschnitt hinzufügen ( führt aber zu Data Leak also nicht benutzen!)
+    #df['rolling_mean_week'] = df[last_spalte].rolling(window=7).mean()
+    #df['rolling_mean'] = df[last_spalte].rolling(window=30).mean()
     return df
 
 # Feiertage hinzufügen
@@ -80,12 +80,11 @@ def createFeatures(df_verbrauch):
     df_verbrauch['Month'] = df_verbrauch.index.month
     df_verbrauch['Season'] = df_verbrauch.index.month.map(add_seasons)
     df_verbrauch['is_weekend'] = df_verbrauch.index.weekday.isin([5, 6])  # Samstag (5) und Sonntag (6)
-    # Lags hinzufügen
-    df_verbrauch = add_lag(df_verbrauch)
     # Feiertage hinzufügen
     df_verbrauch = add_holidays(df_verbrauch)
     #df_verbrauch = add_holidays_TransNetBW(df_verbrauch)
     #df_verbrauch = add_holidays_50Hertz(df_verbrauch)
+    df_verbrauch = add_lag(df_verbrauch)
     return df_verbrauch
 
 if __name__ == "__main__":
@@ -105,9 +104,9 @@ if __name__ == "__main__":
     data_klima = get_weather_data()
     dataset = pd.merge(dataset, data_klima, left_index=True, right_index=True,
                    how='inner')  # nur gemeinsame Datumswerte zur Sicherheit
-
     ### Features und Target
     dataset = createFeatures(dataset)
+
     #print(dataset.tail(20))
     print(dataset.columns)
     features = [
@@ -115,26 +114,24 @@ if __name__ == "__main__":
                 'Season',
                 'Day_of_year',
                 'lag_year',
-                'lag_week',
-                'lag_day_before',
+                'lag_2year',
+                'lag_3year',
                 'is_holiday',
                 #'is_holiday_BB', 'is_holiday_BE', 'is_holiday_MV', 'is_holiday_SN', 'is_holiday_ST',
                 #'is_holiday_TH', 'is_holiday_HH',
                 'is_weekend',
-                'rolling_mean',
-                'rolling_mean_week',
+                #'rolling_mean',
+                #'rolling_mean_week',
                 'TMK','SDK'
                 ]
 
     target = last_spalte
 
     ### Train and Test Split
-
     # so oder einfach die zwei Datensätze nehmen
     train = dataset.loc[dataset.index < '2023-01-01']
     test = dataset.loc[dataset.index >= '2023-01-01']
     #test = dataset.loc[(dataset.index >= '2022-01-01') & (dataset.index < '2023-01-01')]
-
     print(train.head())
     print(test.head())
     # plot
@@ -159,34 +156,18 @@ if __name__ == "__main__":
 
     # Deutschland
     model = xgb.XGBRegressor(
-        max_depth=8, # 8
-        min_child_weight=10, # 10
+        max_depth=6, # 8
+        min_child_weight=5, # 10
         gamma=0.3,
-        subsample=0.7,
-        colsample_bytree=0.7, # 0.7
-        learning_rate=0.005,  # 0.005
+        subsample=0.8,
+        colsample_bytree=0.8, # 0.7
+        learning_rate=0.01,  # 0.005
         n_estimators=4000,
         reg_alpha=1,
-        reg_lambda=5,
+        reg_lambda=3,
         early_stopping_rounds=50,
         objective='reg:squarederror'
         )
-    """
-    # 50Hertz
-    model = xgb.XGBRegressor(
-        max_depth=8,
-        min_child_weight=5,
-        gamma=0.3, # Regularisiert Split -> Gain muss groß genug sein
-        #subsample=0.8, #  Anteil Trainingsdaten pro Baum
-        colsample_bytree=0.8, # Anteil Features pro Baum
-        learning_rate=0.005,
-        n_estimators=4000, #  Anzahl Bäume
-        reg_alpha=1, # L1 Regularisierung (Feature Selection)
-        reg_lambda=5, # L2 Regularisierung
-        early_stopping_rounds=100,
-        objective='reg:squarederror'
-        )
-    """
 
     model.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_test, y_test)], verbose=50)
 
@@ -216,7 +197,7 @@ if __name__ == "__main__":
     #plt.ylim(0.5e6, 2e6)
     plt.xlabel('Datum')
     plt.ylabel('Stromverbrauch (in Mio MWh)')
-    plt.title('Tatsächliche Werte vs. Vorhersagen in Deutschland für 2023')
+    plt.title('Tatsächliche Werte vs. Vorhersagen für 2023')
     # Legende
     plt.legend()
     # Zeige das Diagramm an

@@ -56,7 +56,7 @@ def get_weather_data():
     states_50Hertz = ["Hamburg", "Berlin", "Magdeburg", "Dresden", "Schwerin", "Erfurt", "Potsdam"]
     states_TransNetBW = ["Stuttgart"]
     datasets = []
-    for state in states:
+    for state in states_TransNetBW:
         file_path = f"{WEATHER_DATA_PATH}/tageswerte_{state}/Wetterdaten.txt"
         try:
             # Datei laden
