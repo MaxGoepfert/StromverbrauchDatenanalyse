@@ -68,7 +68,6 @@ if __name__ == "__main__":
     plt.show()
 
 
-
 # Korrelation berechnen
 correlation = data_50Hertz[last_spalte].corr(data_TransNetBW[last_spalte])
 

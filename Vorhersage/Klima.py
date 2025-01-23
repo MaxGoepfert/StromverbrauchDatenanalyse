@@ -36,27 +36,38 @@ def convertDatasets(dataset):
     # Zählen der NaN-Werte
     missing_count_per_column = missing_values.sum()
 
-    print("\nErsetzte fehlende Werte mit NaN und Zählen der NaN-Werte pro Spalte:")
-    print(missing_count_per_column)
+    #print("\nErsetzte fehlende Werte mit NaN und Zählen der NaN-Werte pro Spalte:")
+    #print(missing_count_per_column)
 
     outliers = (dataset < -20) | (dataset > 40)
 
-    print("Identifizierte Ausreißer (Werte unter -100 oder über 100):")
-    print(outliers.sum())
+    #print("Identifizierte Ausreißer (Werte unter -100 oder über 100):")
+    #print(outliers.sum())
     return dataset
 
-def get_weather_data():
+def get_weather_data(zone):
     # TO DO: Wetterstationen aggregieren und sinnvoll auswählen -> Hauptstädte der Bundesländer
     # TransNetBW: Stuttgart Wetterstation (recht zentral)
     # 50Hertz: Hamburg, Berlin, Magdeburg, Dresden, Schwerin, Erfurt, Potsdam
     # Deutschland: Hamburg, Berlin, Magdeburg, Dresden, Schwerin, Erfurt, Potsdam, Stuttgart,
     #              München, Mainz, Saarbrücken, Wiesbaden, Düsseldorf, Hannover, Bremen, Kiel
-    states = ["Hamburg", "Berlin", "Magdeburg", "Dresden", "Schwerin", "Erfurt", "Potsdam", "Stuttgart",
-                  "Muenchen", "Mainz", "Saarbruecken", "Wiesbaden", "Duesseldorf", "Hannover", "Bremen", "Kiel"]
-    states_50Hertz = ["Hamburg", "Berlin", "Magdeburg", "Dresden", "Schwerin", "Erfurt", "Potsdam"]
-    states_TransNetBW = ["Stuttgart"]
+    if zone == "50hertz":
+        states = ["Hamburg", "Berlin", "Magdeburg", "Dresden", "Schwerin", "Erfurt", "Potsdam"]
+        print("Wetterdaten der Regelzone 50Hertz laden...")
+    elif zone == "transnetbw":
+        states = ["Stuttgart"]
+        print("Wetterdaten der Regelzone TransNetBW laden...")
+    elif zone == "de":
+        states = ["Hamburg", "Berlin", "Magdeburg", "Dresden", "Schwerin", "Erfurt", "Potsdam", "Stuttgart",
+                      "Muenchen", "Mainz", "Saarbruecken", "Wiesbaden", "Duesseldorf", "Hannover", "Bremen", "Kiel"]
+        print("Wetterdaten für Deutschland laden...")
+    else:
+        print("Keine Regelzone/Falsche Regelzone ausgewählt: Fortfahren mit Wetterdaten für Deutschland")
+        states = ["Hamburg", "Berlin", "Magdeburg", "Dresden", "Schwerin", "Erfurt", "Potsdam", "Stuttgart",
+                      "Muenchen", "Mainz", "Saarbruecken", "Wiesbaden", "Duesseldorf", "Hannover", "Bremen", "Kiel"]
+
     datasets = []
-    for state in states_TransNetBW:
+    for state in states:
         file_path = f"{WEATHER_DATA_PATH}/tageswerte_{state}/Wetterdaten.txt"
         try:
             # Datei laden
@@ -73,17 +84,17 @@ def get_weather_data():
     return dataset
 
 if __name__ == '__main__':
-    df = get_weather_data()
+    zone = input("Regelzone? [ DE / TransNetBW / 50Hertz]: \n")
+    zone = zone.lower()
+    df = get_weather_data(zone)
 
     # Plot erstellen
     plt.figure(figsize=(12, 6))  # Größe des Plots festlegen
     plt.plot(df.index, df['RSK'], color='blue')
-
     # Achsentitel und Plot-Titel
     plt.xlabel("Zeit (Tage)")
     plt.ylabel("Tagesmitteltemp.")  # Einheit anpassen, falls bekannt
     plt.title('Klima - Tagesmitteltemperaturen DE')
-
     plt.grid()
     # Plot anzeigen
     plt.show()

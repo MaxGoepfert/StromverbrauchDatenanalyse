@@ -93,8 +93,8 @@ if __name__ == "__main__":
     #cleanData(data, zeit_spalte, last_spalte)
     #plot data
     #plotData(data,zeit_spalte, last_spalte, "Stromverbrauch Deutschland 2017-2023")
-    plotData(data_50Hertz,zeit_spalte, standard_spalte, "50Hertz")
-    plotData(data_TransNetBW,zeit_spalte, standard_spalte, "TransNetBW")
+    plotData(data_50Hertz, zeit_spalte, standard_spalte, "50Hertz")
+    plotData(data_TransNetBW, zeit_spalte, standard_spalte, "TransNetBW")
 
     #movingAvg(data_50Hertz, zeit_spalte, last_spalte, 'Gleitender Durchschnitt 50Hertz')
     #movingAvg(data_TransNetBW, zeit_spalte, last_spalte, 'Gleitender Durchschnitt TransNetBW')
