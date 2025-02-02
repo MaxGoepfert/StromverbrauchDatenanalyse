@@ -20,7 +20,7 @@ def cleanData(data, zeit_spalte, last_spalte):
     missing_values2 = dataset[last_spalte].isnull().sum()
     print(f"Fehlende Werte in der Spalte '{last_spalte}': {missing_values2}")
 
-    # zeit_spalte als Index setzen
+    # ZEIT_SPALTE als Index setzen
     dataset.set_index(zeit_spalte, inplace=True)
 
     return dataset

@@ -6,7 +6,7 @@ def cleanData(data, zeit_spalte, last_spalte):
     data = data.copy()
     # Umwandlung der Zeit-Spalte in datetime und als index setzen
     data[zeit_spalte] = pd.to_datetime(data[zeit_spalte], dayfirst=True, errors='raise')
-    # print(data[zeit_spalte])
+    # print(data[ZEIT_SPALTE])
     data.set_index(zeit_spalte, inplace=True)
 
     # print(data.index)
@@ -62,5 +62,5 @@ zeit_spalte = 'Datum von'
 last_spalte = 'Gesamt (Netzlast) [MWh] Berechnete Auflösungen'
 print(getJahresdurchschnitt(data50Hertz, zeit_spalte, last_spalte).columns)
 
-#print(getJahresdurchschnitt(dataBW, zeit_spalte, last_spalte))
-#plotJahresdurchschnitt(data50Hertz, dataBW, zeit_spalte, last_spalte)
+#print(getJahresdurchschnitt(dataBW, ZEIT_SPALTE, VERBRAUCH_SPALTE))
+#plotJahresdurchschnitt(data50Hertz, dataBW, ZEIT_SPALTE, VERBRAUCH_SPALTE)

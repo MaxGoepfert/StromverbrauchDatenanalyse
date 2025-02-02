@@ -50,7 +50,7 @@ data[verbrauch_spalte] = pd.to_numeric(data[verbrauch_spalte], errors='raise')
 # in MWh konvertieren
 data[verbrauch_spalte] = data[verbrauch_spalte].apply(convert_to_mwh)
 # Skalieren in Mio. MWh
-#data[verbrauch_spalte] = data[verbrauch_spalte] / 1e6
+#data[VERBRAUCH_SPALTE] = data[VERBRAUCH_SPALTE] / 1e6
 
 
 def plotBundeslaender(data, bundeslaender, zeit_spalte, verbrauch_spalte):
@@ -69,7 +69,7 @@ def plotBundeslaender(data, bundeslaender, zeit_spalte, verbrauch_spalte):
     # Plot anzeigen
     plt.show()
 
-#plotBundeslaender(data,bundeslaenderGesamt, zeit_spalte, verbrauch_spalte)
+#plotBundeslaender(data,bundeslaenderGesamt, ZEIT_SPALTE, VERBRAUCH_SPALTE)
 
 def getSumIndustrie(data, bundeslaender50Hertz, zeit_spalte, verbrauch_spalte):
     # Filter auf die Bundesländer von 50Hertz
@@ -81,9 +81,9 @@ def getSumIndustrie(data, bundeslaender50Hertz, zeit_spalte, verbrauch_spalte):
     # clean data
     #summed_data = summed_data.copy()
     # Umwandlung der Zeit-Spalte in datetime und als index setzen
-    #summed_data[zeit_spalte] = pd.to_datetime(summed_data[zeit_spalte], dayfirst=True, errors='raise')
+    #summed_data[ZEIT_SPALTE] = pd.to_datetime(summed_data[ZEIT_SPALTE], dayfirst=True, errors='raise')
 
-    #summed_data.set_index(zeit_spalte, inplace=True)
+    #summed_data.set_index(ZEIT_SPALTE, inplace=True)
 
     return summed_data
 
@@ -112,7 +112,7 @@ def plotSum(data, bundeslaender50Hertz, zeit_spalte, verbrauch_spalte):
     plt.show()
 
 
-#plotSum(data, bundeslaender50Hertz, zeit_spalte_industrie, verbrauch_spalte)
+#plotSum(data, bundeslaender50Hertz, zeit_spalte_industrie, VERBRAUCH_SPALTE)
 
 def correlation(dataset1, dataset2, zeit_spalte, last_spalte, zeit_spalte_industrie, verbrauch_spalte, title):
     # clean data
@@ -173,8 +173,8 @@ print(f"Durchschnitt Stromverbrauch der Industrie in Regelzone TransNetBW: {mean
 
 
 # Korrelation berechnen und plotten
-#correlation(data50Hertz, data_Industrie50Hertz, zeit_spalte, last_spalte, zeit_spalte_industrie, verbrauch_spalte, "Korrelation des Jahresstromverbrauchs zwischen 50Hertz und Industrie")
-#correlation(dataBW, subsetBW, zeit_spalte, last_spalte, zeit_spalte_industrie, verbrauch_spalte, "Korrelation des Jahresstromverbrauchs zwischen TransNetBW und Industrie")
+#correlation(data50Hertz, data_Industrie50Hertz, ZEIT_SPALTE, VERBRAUCH_SPALTE, zeit_spalte_industrie, VERBRAUCH_SPALTE, "Korrelation des Jahresstromverbrauchs zwischen 50Hertz und Industrie")
+#correlation(dataBW, subsetBW, ZEIT_SPALTE, VERBRAUCH_SPALTE, zeit_spalte_industrie, VERBRAUCH_SPALTE, "Korrelation des Jahresstromverbrauchs zwischen TransNetBW und Industrie")
 
 ### Anteil des Industriestromverbrauchs an Gesamt
 
@@ -195,8 +195,8 @@ def quotaIndustrie(dataset1, dataset2, zeit_spalte, last_spalte, zeit_spalte_ind
     dataset2 = dataset2.sort_values(by=zeit_spalte_industrie, ascending=True)
     dataset2.set_index(zeit_spalte_industrie, inplace=True)
 
-    #print(dataset1[last_spalte])
-    #print(dataset2[verbrauch_spalte])
+    #print(dataset1[VERBRAUCH_SPALTE])
+    #print(dataset2[VERBRAUCH_SPALTE])
 
     dataset1['Anteil Industriestromverbrauch'] = dataset2[verbrauch_spalte] / dataset1[last_spalte]
 

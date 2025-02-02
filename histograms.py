@@ -11,7 +11,7 @@ def cleanData(data, zeit_spalte, last_spalte):
     data = data.copy()
     # Umwandlung der Zeit-Spalte in datetime und als index setzen
     data[zeit_spalte] = pd.to_datetime(data[zeit_spalte], dayfirst=True, errors='raise')
-    # print(data[zeit_spalte])
+    # print(data[ZEIT_SPALTE])
     data.set_index(zeit_spalte, inplace=True)
 
     # print(data.index)
@@ -30,10 +30,10 @@ def cleanData(data, zeit_spalte, last_spalte):
 
 
 """"
-def plotHistogram(data, zeit_spalte, last_spalte, title):
-    data = cleanData(data, zeit_spalte, last_spalte)
+def plotHistogram(data, ZEIT_SPALTE, VERBRAUCH_SPALTE, title):
+    data = cleanData(data, ZEIT_SPALTE, VERBRAUCH_SPALTE)
     plt.figure(figsize=(10,8))
-    sns.histplot(data=data, x=last_spalte, bins=50, kde=True, color='blue', label=title)
+    sns.histplot(data=data, x=VERBRAUCH_SPALTE, bins=50, kde=True, color='blue', label=title)
     plt.title('Verteilung des Stromverbrauchs in Deutschland (Tageweise)')
     plt.xlabel('Stromverbrauch (in Mio. MWh)')
     plt.ylabel('Häufigkeit')
@@ -89,5 +89,5 @@ zeit_spalte = 'Datum von'
 last_spalte = 'Gesamt (Netzlast) [MWh] Berechnete Auflösungen'
 plotHistogram(data50Hertz,zeit_spalte, last_spalte, 'Verteilung des Stromverbrauchs 50Hertz (Tageweise)')
 plotHistogram(dataBW,zeit_spalte, last_spalte, 'Verteilung des Stromverbrauchs TransNetBW (Tageweise)')
-#plotHistogram(dataDE,zeit_spalte, last_spalte, 'Verteilung des Stromverbrauchs in Deutschland (Tageweise)')
+#plotHistogram(dataDE,ZEIT_SPALTE, VERBRAUCH_SPALTE, 'Verteilung des Stromverbrauchs in Deutschland (Tageweise)')
 

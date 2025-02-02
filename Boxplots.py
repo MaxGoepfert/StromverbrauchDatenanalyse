@@ -11,7 +11,7 @@ def cleanData(data, zeit_spalte, last_spalte):
     data = data.copy()
     # Umwandlung der Zeit-Spalte in datetime und als index setzen
     data[zeit_spalte] = pd.to_datetime(data[zeit_spalte], dayfirst=True, errors='raise')
-    # print(data[zeit_spalte])
+    # print(data[ZEIT_SPALTE])
     data.set_index(zeit_spalte, inplace=True)
 
     # print(data.index)
@@ -36,7 +36,7 @@ def plotBoxplot(data, zeit_spalte, last_spalte, title):
 
     ### Standartisieren für Vergleich
     #scaler = StandardScaler()
-    #df_verbrauch['standardized_last_spalte'] = scaler.fit_transform(df_verbrauch[[last_spalte]])
+    #df_verbrauch['standardized_last_spalte'] = scaler.fit_transform(df_verbrauch[[VERBRAUCH_SPALTE]])
     ###
 
     # dayOfWeek
@@ -70,8 +70,8 @@ dataBW = pd.read_csv(dataPathBW, delimiter=';')
 data_DE = pd.read_csv(dataPath_DE, delimiter=';')
 zeit_spalte = 'Datum von'
 last_spalte = 'Gesamt (Netzlast) [MWh] Berechnete Auflösungen'
-#plotBoxplot(data50Hertz, zeit_spalte, last_spalte, 'Stromverbrauch der Monate für 50Hertz')
-#plotBoxplot(dataBW, zeit_spalte, last_spalte, 'Stromverbrauch der Monate für TransNetBW')
+#plotBoxplot(data50Hertz, ZEIT_SPALTE, VERBRAUCH_SPALTE, 'Stromverbrauch der Monate für 50Hertz')
+#plotBoxplot(dataBW, ZEIT_SPALTE, VERBRAUCH_SPALTE, 'Stromverbrauch der Monate für TransNetBW')
 plotBoxplot(data_DE, zeit_spalte, last_spalte, 'Stromverbrauch der Wochentage in Deutschland')
 # monatliche Korrelation
 
@@ -83,7 +83,7 @@ data_50Hertz['Monat'] = data_50Hertz.index.month
 data_TransNetBW['Monat'] = data_TransNetBW.index.month
 
 # Gruppierung nach Monat und Berechnung der Korrelation
-korrelationen_monatlich = data_50Hertz.groupby('Monat')[last_spalte].corr(data_TransNetBW[last_spalte])
+korrelationen_monatlich = data_50Hertz.groupby('Monat')[VERBRAUCH_SPALTE].corr(data_TransNetBW[VERBRAUCH_SPALTE])
 
 # Ausgabe
 print("Korrelationen pro Monat:")

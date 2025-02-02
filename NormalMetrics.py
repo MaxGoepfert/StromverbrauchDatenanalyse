@@ -42,10 +42,10 @@ def cleanData(dataset, zeit_spalte, last_spalte):
 
     # Prüfen, ob ungültige Werte (NaN) existieren
     missing_values1 = dataset[zeit_spalte].isnull().sum()
-    #print(f"Fehlende Werte in der Spalte '{zeit_spalte}': {missing_values1}")
+    #print(f"Fehlende Werte in der Spalte '{ZEIT_SPALTE}': {missing_values1}")
     # Prüfen, ob ungültige Werte (NaN) existieren
     missing_values2 = dataset[last_spalte].isnull().sum()
-    #print(f"Fehlende Werte in der Spalte '{last_spalte}': {missing_values2}")
+    #print(f"Fehlende Werte in der Spalte '{VERBRAUCH_SPALTE}': {missing_values2}")
 
 ### Langfristige Trends |||| Gleitender Durchschnitt
 def movingAvg(dataset, zeit_spalte, last_spalte, title):
@@ -90,37 +90,37 @@ if __name__ == "__main__":
     ###
     standard_spalte = 'standardized_last_spalte'
 
-    #cleanData(data, zeit_spalte, last_spalte)
+    #cleanData(data, ZEIT_SPALTE, VERBRAUCH_SPALTE)
     #plot data
-    #plotData(data,zeit_spalte, last_spalte, "Stromverbrauch Deutschland 2017-2023")
+    #plotData(data,ZEIT_SPALTE, VERBRAUCH_SPALTE, "Stromverbrauch Deutschland 2017-2023")
     plotData(data_50Hertz, zeit_spalte, standard_spalte, "50Hertz")
     plotData(data_TransNetBW, zeit_spalte, standard_spalte, "TransNetBW")
 
-    #movingAvg(data_50Hertz, zeit_spalte, last_spalte, 'Gleitender Durchschnitt 50Hertz')
-    #movingAvg(data_TransNetBW, zeit_spalte, last_spalte, 'Gleitender Durchschnitt TransNetBW')
-    #movingAvg(data, zeit_spalte, last_spalte, 'Gleitender Durchschnitt Deutschland')
+    #movingAvg(data_50Hertz, ZEIT_SPALTE, VERBRAUCH_SPALTE, 'Gleitender Durchschnitt 50Hertz')
+    #movingAvg(data_TransNetBW, ZEIT_SPALTE, VERBRAUCH_SPALTE, 'Gleitender Durchschnitt TransNetBW')
+    #movingAvg(data, ZEIT_SPALTE, VERBRAUCH_SPALTE, 'Gleitender Durchschnitt Deutschland')
     """
-    varianz = data[last_spalte].var()
+    varianz = data[VERBRAUCH_SPALTE].var()
     print(f"Die Varianz der Netzlast in DE beträgt: {varianz}\n")
-    std_DE = np.std(data[last_spalte])
+    std_DE = np.std(data[VERBRAUCH_SPALTE])
     print(f"Die std-Abweichung der Netzlast in DE beträgt: {std_DE}\n")
 
-    mean_DE = np.mean(data[last_spalte])
+    mean_DE = np.mean(data[VERBRAUCH_SPALTE])
     print(f"Der Mittelwert der Netzlast in DE beträgt: {mean_DE: .2f} \n")
 
-    median_DE = np.median(data[last_spalte])
+    median_DE = np.median(data[VERBRAUCH_SPALTE])
     print(f"Der Median der Netzlast in DE beträgt: {median_DE: .2f}\n")
 
     vk_DE = (std_DE / mean_DE) * 100
     print(f"Die Variationskoefizient (in %) der Netzlast in DE beträgt: {vk_DE: .2f}%\n")
 
     # Größten Wert in der Zielspalte anzeigen
-    max_value = data[last_spalte].max()
-    print(f"Der größte Wert in der Spalte {last_spalte} von DE ist: {max_value}\n")
+    max_value = data[VERBRAUCH_SPALTE].max()
+    print(f"Der größte Wert in der Spalte {VERBRAUCH_SPALTE} von DE ist: {max_value}\n")
 
     # Größten Wert in der Zielspalte anzeigen
-    min_value = data[last_spalte].min()
-    print(f"Der kleinste Wert in der Spalte {last_spalte} von DE ist: {min_value}")
+    min_value = data[VERBRAUCH_SPALTE].min()
+    print(f"Der kleinste Wert in der Spalte {VERBRAUCH_SPALTE} von DE ist: {min_value}")
 
     """
     #    50 Hertz und TransNetBW

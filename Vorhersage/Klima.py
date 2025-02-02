@@ -6,51 +6,52 @@ from config import WEATHER_DATA_PATH
 def convertDatasets(dataset):
     zeit_spalte = 'MESS_DATUM'
     temp_avg_spalte = 'TMK' # Tagesdurchschnittstemperatur
-    #temp_max_spalte = 'TXK' # Tageshöchsttemperatur
-    #temp_min_spalte = 'TNK' # Tagesniedrigsttemperatur
+    temp_max_spalte = 'TXK' # Tageshöchsttemperatur
+    temp_min_spalte = 'TNK' # Tagesniedrigsttemperatur
     sonne_h_spalte = 'SDK' # Sonnenscheindauer (in Stunden)
-    #niederschlag_spalte = 'RSK' # Menge an Niederschlag in mm
-    #niederschlag_ordinal_spalte = 'RSKF' # Art/Stärke des Niederschlags 0-9 --> 0 trocken, 9 Extrem-ereignis
+    niederschlag_spalte = 'RSK' # Menge an Niederschlag in mm
+    niederschlag_ordinal_spalte = 'RSKF' # Art/Stärke des Niederschlags 0-9 --> 0 trocken, 9 Extrem-ereignis
+    luftfeuchtigkeit_spalte = 'UPM' # Relative Luftfeuchtigkeit (in %)
+    luftdruck_spalte = 'PM' # in hPa
+    dampfdruck_spalte = 'VPM' # in hPa
+
     dataset = dataset.copy()
     dataset.columns = dataset.columns.str.strip()
 
     # Umwandlung der Zeit-Spalte in datetime, zur Sicherheit
     dataset[zeit_spalte] = pd.to_datetime(dataset[zeit_spalte], format='%Y%m%d', errors='raise')
 
-    # zeit_spalte als Index setzen
+    # ZEIT_SPALTE als Index setzen
     dataset.set_index(zeit_spalte, inplace=True)
     # Nur nötigen Zeitraum behalten
     dataset = dataset.loc[dataset.index >= '2017-01-01']
     dataset = dataset[[temp_avg_spalte,
-                       #temp_max_spalte, temp_min_spalte,
+                       temp_max_spalte, temp_min_spalte,
                        sonne_h_spalte,
-                       #niederschlag_spalte, niederschlag_ordinal_spalte
+                       niederschlag_spalte, niederschlag_ordinal_spalte,
+                       luftfeuchtigkeit_spalte, luftdruck_spalte, dampfdruck_spalte
                        ]]
 
-    # Ersetzen von -999 durch NaN
+    # Ersetzen von -999 durch NaN und dann mit Mittelwerten auffüllen
     dataset.replace(-999, np.nan, inplace=True)
+    dataset = dataset.apply(lambda col: col.fillna(col.mean()), axis=0)
 
     # Identifizieren von NaN-Werten
-    missing_values = dataset.isna()
+    #missing_values = dataset.isna()
+    # Zählen der NaN-Werte -> Sollte jetzt 0 sein
+    #missing_count_per_column = missing_values.sum()
 
-    # Zählen der NaN-Werte
-    missing_count_per_column = missing_values.sum()
-
-    #print("\nErsetzte fehlende Werte mit NaN und Zählen der NaN-Werte pro Spalte:")
+    #print("Ersetzte fehlende Werte mit NaN und Zählen der NaN-Werte pro Spalte:")
     #print(missing_count_per_column)
 
-    outliers = (dataset < -20) | (dataset > 40)
-
-    #print("Identifizierte Ausreißer (Werte unter -100 oder über 100):")
-    #print(outliers.sum())
     return dataset
 
 def get_weather_data(zone):
-    # TO DO: Wetterstationen aggregieren und sinnvoll auswählen -> Hauptstädte der Bundesländer
+    # Wetterstationen werden aggregiert -> Hauptstädte der Bundesländer (mit Ausnahme Hessen->Frankfurt statt Wiesbaden)
     # TransNetBW: Stuttgart Wetterstation (recht zentral)
     # 50Hertz: Hamburg, Berlin, Magdeburg, Dresden, Schwerin, Erfurt, Potsdam
     # Deutschland: Hamburg, Berlin, Magdeburg, Dresden, Schwerin, Erfurt, Potsdam, Stuttgart,
-    #              München, Mainz, Saarbrücken, Wiesbaden, Düsseldorf, Hannover, Bremen, Kiel
+    #              München, Mainz, Saarbrücken, Wiesbaden/Frankfurt, Düsseldorf, Hannover, Bremen, Kiel
     if zone == "50hertz":
         states = ["Hamburg", "Berlin", "Magdeburg", "Dresden", "Schwerin", "Erfurt", "Potsdam"]
         print("Wetterdaten der Regelzone 50Hertz laden...")
@@ -59,12 +60,12 @@ def get_weather_data(zone):
         print("Wetterdaten der Regelzone TransNetBW laden...")
     elif zone == "de":
         states = ["Hamburg", "Berlin", "Magdeburg", "Dresden", "Schwerin", "Erfurt", "Potsdam", "Stuttgart",
-                      "Muenchen", "Mainz", "Saarbruecken", "Wiesbaden", "Duesseldorf", "Hannover", "Bremen", "Kiel"]
+                      "Muenchen", "Mainz", "Saarbruecken", "Frankfurt", "Duesseldorf", "Hannover", "Bremen", "Kiel"]
         print("Wetterdaten für Deutschland laden...")
     else:
         print("Keine Regelzone/Falsche Regelzone ausgewählt: Fortfahren mit Wetterdaten für Deutschland")
         states = ["Hamburg", "Berlin", "Magdeburg", "Dresden", "Schwerin", "Erfurt", "Potsdam", "Stuttgart",
-                      "Muenchen", "Mainz", "Saarbruecken", "Wiesbaden", "Duesseldorf", "Hannover", "Bremen", "Kiel"]
+                      "Muenchen", "Mainz", "Saarbruecken", "Frankfurt", "Duesseldorf", "Hannover", "Bremen", "Kiel"]
 
     datasets = []
     for state in states:
@@ -72,6 +73,7 @@ def get_weather_data(zone):
         try:
             # Datei laden
             data = pd.read_csv(file_path, delimiter=';')
+            print(f"Lade Daten von Wetterstation {state}... ")
             data = convertDatasets(data) # Bereinigen und Konvertieren/Selektieren der Spalten
             datasets.append(data)  # Füge den geladenen DataFrame der Liste hinzu
         except FileNotFoundError:
@@ -90,11 +92,11 @@ if __name__ == '__main__':
 
     # Plot erstellen
     plt.figure(figsize=(12, 6))  # Größe des Plots festlegen
-    plt.plot(df.index, df['RSK'], color='blue')
+    plt.plot(df.index, df['TMK'], color='blue')
     # Achsentitel und Plot-Titel
     plt.xlabel("Zeit (Tage)")
     plt.ylabel("Tagesmitteltemp.")  # Einheit anpassen, falls bekannt
-    plt.title('Klima - Tagesmitteltemperaturen DE')
+    plt.title('Klima - Tagesmitteltemperaturen')
     plt.grid()
     # Plot anzeigen
     plt.show()
