@@ -1,23 +1,15 @@
-import sys
-
 import pandas as pd
 import xgboost as xgb
 import numpy as np
 from matplotlib import pyplot as plt
-from scipy.stats import spearmanr
 from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
-import Holiday_feature
 from sklearn.model_selection import TimeSeriesSplit
-from sklearn.preprocessing import StandardScaler
 
 import Seasonality
 import Lag_features
-from features import feature_engineering
 import Klima
 import Holiday_feature
-import config
-
-import openpyxl
+from Vorhersage import config
 
 pd.set_option('display.max_columns', 50)
 pd.set_option('display.max_colwidth', 2000)
@@ -55,15 +47,15 @@ def createFeatures(df_verbrauch, zone):
     # Feiertage hinzufügen
     if zone == "50hertz":
         df_verbrauch = Holiday_feature.add_holidays_50Hertz(df_verbrauch)
-        print("Feiertage für 50Hertz laden...")
+        print("Feiertage für 50Hertz laden...\n")
     elif zone == "transnetbw":
         df_verbrauch = Holiday_feature.add_holidays_TransNetBW(df_verbrauch)
-        print("Feiertage für TransNetBW laden...")
+        print("Feiertage für TransNetBW laden...\n")
     elif zone == "de":
         df_verbrauch = Holiday_feature.add_holidays_de(df_verbrauch)
-        print("Feiertage für Deutschland laden...")
+        print("Feiertage für Deutschland laden...\n")
     else:
-        print("Keine Regelzone/Falsche Regelzone ausgewählt: Fortfahren mit Feiertage für Deutschland")
+        print("Keine Regelzone/Falsche Regelzone ausgewählt: Fortfahren mit Feiertage für Deutschland\n")
         df_verbrauch = Holiday_feature.add_holidays_de(df_verbrauch)
     df_verbrauch = Lag_features.add_lag(df_verbrauch, VERBRAUCH_SPALTE)
 
@@ -74,7 +66,7 @@ if __name__ == "__main__":
     ### Benutzereingabe zur Regelzonen-Auswahl
     zone = input("Bitte Regelzone auswählen [DE / TransNetBW / 50Hertz]: \n")
     zone = zone.lower()
-    leak = input("Vorhersage auf tagesbasis mithilfe der Daten des Vortags erlauben? (Data Leak!!) [ J / N]: \n")
+    leak = input("Vorhersage auf Tagesbasis mithilfe der tatsächlichen Daten des Vortages erlauben? \nBemerkung: Führt zu Data Leak für Vorhersagen weiter als einen Tag in die Zukunft! [ J / N]: \n")
 
 
     ### Einlesen der Datensätze
@@ -180,7 +172,7 @@ if __name__ == "__main__":
                        verbose=50)
             # Initialisiere mit echten historischen Werten für ersten Tag
             current_input = x_test.iloc[0].copy()  # erste Zeile des Testdatensatzes
-            print(f"current input: {current_input}")
+
             # Iterativer Vorhersagen mit jeweils nächstem Tag
             for i in range(len(x_test)):
                 input_pred = current_input.values.reshape(1, -1) # predict() erwartet 2D Matrix statt 1D Array
@@ -204,12 +196,12 @@ if __name__ == "__main__":
         all_mae += mae
         num_split += 1
         print(f"Evaluation for the fold: {num_split}:\n")
-        print(f"Evaluation: Root mean squared error is: {rmse: .3f}")
-        print(f"Evaluation: Mean absolute error is: {mae: .3f}")
+        print(f"Evaluation: Root mean squared error is: {rmse: .3f} MWh")
+        print(f"Evaluation: Mean absolute error is: {mae: .3f} MWh")
         print(f"Evaluation: Mean absolute percentage error is: {mape * 100: .3f} %\n")
 
-    print(f"Overall Evaluation: Root mean squared error is: {all_rmse / num_split: .3f}")
-    print(f"Oberall Evaluation: Mean absolute error is: {all_mae / num_split: .3f}")
+    print(f"Overall Evaluation: Root mean squared error is: {all_rmse / num_split: .3f} MWh")
+    print(f"Oberall Evaluation: Mean absolute error is: {all_mae / num_split: .3f} MWh")
     print(f"Overall Evaluation: Mean absolute percentage error is: {all_mape * 100 / num_split: .3f} %")
 
     # Feature Importance Plot

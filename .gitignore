@@ -1,0 +1,13 @@
+# Ignoriere das virtuelle Environment
+venv/
+env/
+
+# Python Bytecode
+*.pyc
+__pycache__/
+
+# Logs
+*.log
+
+# macOS-spezifische Dateien
+.DS_Store

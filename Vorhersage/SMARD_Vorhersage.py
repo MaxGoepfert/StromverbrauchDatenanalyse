@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
-from config import DE_STROM_DATA_PATH, DE_STROM_PROG_DATA_PATH
+from Vorhersage.config import DE_STROM_DATA_PATH, DE_STROM_PROG_DATA_PATH
 from matplotlib import pyplot as plt
 
 def cleanData(data, zeit_spalte, last_spalte):

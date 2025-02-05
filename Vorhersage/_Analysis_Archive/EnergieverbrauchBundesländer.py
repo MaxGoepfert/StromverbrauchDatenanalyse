@@ -9,7 +9,7 @@ def convert_to_mwh(value):
     return value  # NaN-Werte bleiben NaN
 
 
-data_Path = "data/datasetEnergieverbrauchBundesland.csv"
+data_Path = "../data/datasetEnergieverbrauchBundesland.csv"
 data = pd.read_csv(data_Path, delimiter=';', na_values='.')
 
 # Alle Spalten anzeigen
@@ -37,7 +37,7 @@ bundeslaenderGesamt = ['Hamburg','Baden-W�rttemberg','Berlin', 'Brandenburg', 
 
 
 
-dataEinwohner = pd.read_csv('data/EinwohnerzahlenBundeslaender.csv', delimiter=';')
+dataEinwohner = pd.read_csv('../data/EinwohnerzahlenBundeslaender.csv', delimiter=';')
 dataEinwohner['Insgesamt'] = pd.to_numeric(dataEinwohner['Insgesamt'].str.replace(r"\s+", "", regex=True), errors='raise')
 
 

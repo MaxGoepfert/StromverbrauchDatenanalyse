@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from config import WEATHER_DATA_PATH
+from Vorhersage.config import WEATHER_DATA_PATH
 
 def convertDatasets(dataset):
     zeit_spalte = 'MESS_DATUM'
@@ -54,14 +54,14 @@ def get_weather_data(zone):
     #              München, Mainz, Saarbrücken, Wiesbaden/Frankfurt, Düsseldorf, Hannover, Bremen, Kiel
     if zone == "50hertz":
         states = ["Hamburg", "Berlin", "Magdeburg", "Dresden", "Schwerin", "Erfurt", "Potsdam"]
-        print("Wetterdaten der Regelzone 50Hertz laden...")
+        print("Wetterdaten der Regelzone 50Hertz laden:")
     elif zone == "transnetbw":
         states = ["Stuttgart"]
-        print("Wetterdaten der Regelzone TransNetBW laden...")
+        print("Wetterdaten der Regelzone TransNetBW laden:")
     elif zone == "de":
         states = ["Hamburg", "Berlin", "Magdeburg", "Dresden", "Schwerin", "Erfurt", "Potsdam", "Stuttgart",
                       "Muenchen", "Mainz", "Saarbruecken", "Frankfurt", "Duesseldorf", "Hannover", "Bremen", "Kiel"]
-        print("Wetterdaten für Deutschland laden...")
+        print("Wetterdaten für Deutschland laden:")
     else:
         print("Keine Regelzone/Falsche Regelzone ausgewählt: Fortfahren mit Wetterdaten für Deutschland")
         states = ["Hamburg", "Berlin", "Magdeburg", "Dresden", "Schwerin", "Erfurt", "Potsdam", "Stuttgart",

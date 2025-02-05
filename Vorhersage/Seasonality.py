@@ -1,5 +1,4 @@
 
-
 def add_seasons(df):
     df['Day_of_year'] = df.index.day_of_year
     df['Weekday'] = df.index.weekday
