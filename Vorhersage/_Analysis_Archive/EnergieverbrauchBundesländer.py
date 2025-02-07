@@ -9,7 +9,7 @@ def convert_to_mwh(value):
     return value  # NaN-Werte bleiben NaN
 
 
-data_Path = "../data/datasetEnergieverbrauchBundesland.csv"
+data_Path = "data/datasetEnergieverbrauchBundesland.csv"
 data = pd.read_csv(data_Path, delimiter=';', na_values='.')
 
 # Alle Spalten anzeigen
@@ -37,7 +37,7 @@ bundeslaenderGesamt = ['Hamburg','Baden-W�rttemberg','Berlin', 'Brandenburg', 
 
 
 
-dataEinwohner = pd.read_csv('../data/EinwohnerzahlenBundeslaender.csv', delimiter=';')
+dataEinwohner = pd.read_csv('data/EinwohnerzahlenBundeslaender.csv', delimiter=';')
 dataEinwohner['Insgesamt'] = pd.to_numeric(dataEinwohner['Insgesamt'].str.replace(r"\s+", "", regex=True), errors='raise')
 
 
@@ -152,8 +152,8 @@ def correlation(dataset1, dataset2, zeit_spalte, last_spalte, zeit_spalte_indust
 
 
 ### Korrelation
-dataPath50Hertz = '../data/Realisierter_Stromverbrauch_2017-2023_Jahr_50Hertz.csv'
-dataPathBW = '../data/Realisierter_Stromverbrauch_2017-2023_Jahr_TransNetBW.csv'
+dataPath50Hertz = 'data/Realisierter_Stromverbrauch_2017-2023_Jahr_50Hertz.csv'
+dataPathBW = 'data/Realisierter_Stromverbrauch_2017-2023_Jahr_TransNetBW.csv'
 data50Hertz = pd.read_csv(dataPath50Hertz, delimiter=';')
 dataBW = pd.read_csv(dataPathBW, delimiter=';')
 zeit_spalte = 'Datum von'

@@ -2,14 +2,13 @@ from scipy.stats import spearmanr
 
 
 def feature_engineering(dataset):
-    zeit_spalte = "Datum von"
     verbrauch_spalte = "Gesamt (Netzlast) [MWh] Berechnete Auflösungen"
     rows = ['TMK', 'TXK', 'TNK', 'SDK', 'RSK', 'RSKF', 'PM', 'UPM', 'VPM']
 
-    # Korrelationen mit Klimadaten berechnen
+    ### Korrelationen mit Klimadaten berechnen
     for row in rows:
         correlation = dataset[verbrauch_spalte].corr(dataset[row])
-        # Ergebnis anzeigen
+        # Ergebnis ausgeben
         print(f"Korrelation zwischen Stromverbrauch und {row}: {correlation:.2f}")
         # Berechnung des Spearman-Korrelationskoeffizienten
         spearman_corr = spearmanr(dataset[row], dataset[verbrauch_spalte])

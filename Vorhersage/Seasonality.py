@@ -12,7 +12,7 @@ def add_seasons(df):
 # Jahreszeiten hinzufügen (ungefähr per Monate)
 def add_yearly_seasons(day):
     """
-    In normalen Jahren (Keine Schaltjahre)
+    In normalen Jahren (Keine Schaltjahre):
     Frühling: 20. März – 20. Juni (Day_of_year 80 bis 171)
     Sommer: 21. Juni – 22. September (Day_of_year 172 bis 265)
     Herbst: 23. September – 20. Dezember (Day_of_year 266 bis 354)

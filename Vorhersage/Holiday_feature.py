@@ -1,4 +1,3 @@
-import pandas as pd
 import holidays
 def add_holidays_de(df):
     de_holidays = holidays.Germany()

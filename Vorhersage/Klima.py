@@ -1,19 +1,20 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from Vorhersage.config import WEATHER_DATA_PATH
+from config import WEATHER_DATA_PATH
 
 def convertDatasets(dataset):
     zeit_spalte = 'MESS_DATUM'
     temp_avg_spalte = 'TMK' # Tagesdurchschnittstemperatur
+    sonne_h_spalte = 'SDK' # Sonnenscheindauer (in Stunden)
+    dampfdruck_spalte = 'VPM' # in hPa
+    # folgende Spalten sind interessant aber werden später nicht als Features genutzt
     temp_max_spalte = 'TXK' # Tageshöchsttemperatur
     temp_min_spalte = 'TNK' # Tagesniedrigsttemperatur
-    sonne_h_spalte = 'SDK' # Sonnenscheindauer (in Stunden)
     niederschlag_spalte = 'RSK' # Menge an Niederschlag in mm
     niederschlag_ordinal_spalte = 'RSKF' # Art/Stärke des Niederschlags 0-9 --> 0 trocken, 9 Extrem-ereignis
     luftfeuchtigkeit_spalte = 'UPM' # Relative Luftfeuchtigkeit (in %)
     luftdruck_spalte = 'PM' # in hPa
-    dampfdruck_spalte = 'VPM' # in hPa
 
     dataset = dataset.copy()
     dataset.columns = dataset.columns.str.strip()
@@ -81,8 +82,8 @@ def get_weather_data(zone):
         except Exception as e:
             print(f"Fehler beim Laden von {file_path}: {e}")
     # Kombiniere die Datensätze und berechne den Durchschnitt
-    kombiniert = pd.concat(datasets)  # Kombiniert die Datensätze untereinander
-    dataset = kombiniert.groupby(kombiniert.index).mean()  # Gruppiere nach Index und berechne den Durchschnitt aller Spalten
+    kombiniert = pd.concat(datasets)
+    dataset = kombiniert.groupby(kombiniert.index).mean()  # Gruppiere nach Index und Durchschnitt aller Spalten berechnen
     return dataset
 
 if __name__ == '__main__':
@@ -91,11 +92,11 @@ if __name__ == '__main__':
     df = get_weather_data(zone)
 
     # Plot erstellen
-    plt.figure(figsize=(12, 6))  # Größe des Plots festlegen
+    plt.figure(figsize=(12, 6))
     plt.plot(df.index, df['TMK'], color='blue')
     # Achsentitel und Plot-Titel
     plt.xlabel("Zeit (Tage)")
-    plt.ylabel("Tagesmitteltemp.")  # Einheit anpassen, falls bekannt
+    plt.ylabel("Tagesmitteltemp.")
     plt.title('Klima - Tagesmitteltemperaturen')
     plt.grid()
     # Plot anzeigen

@@ -9,7 +9,7 @@ import Seasonality
 import Lag_features
 import Klima
 import Holiday_feature
-from Vorhersage import config
+import config
 
 pd.set_option('display.max_columns', 50)
 pd.set_option('display.max_colwidth', 2000)
