@@ -152,8 +152,8 @@ def correlation(dataset1, dataset2, zeit_spalte, last_spalte, zeit_spalte_indust
 
 
 ### Korrelation
-dataPath50Hertz = 'data/Realisierter_Stromverbrauch_2017-2023_Jahr_50Hertz.csv'
-dataPathBW = 'data/Realisierter_Stromverbrauch_2017-2023_Jahr_TransNetBW.csv'
+dataPath50Hertz = '../data/Realisierter_Stromverbrauch_2017-2023_Jahr_50Hertz.csv'
+dataPathBW = '../data/Realisierter_Stromverbrauch_2017-2023_Jahr_TransNetBW.csv'
 data50Hertz = pd.read_csv(dataPath50Hertz, delimiter=';')
 dataBW = pd.read_csv(dataPathBW, delimiter=';')
 zeit_spalte = 'Datum von'

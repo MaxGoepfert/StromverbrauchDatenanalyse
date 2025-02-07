@@ -54,8 +54,8 @@ def plotJahresdurchschnitt(data, data2,zeit_spalte, last_spalte):
     plt.show()
 
 # call funtion with data
-dataPath50Hertz = 'data/Realisierter_Stromverbrauch_2017_2024_Tag_50Hertz.csv'
-dataPathBW = 'data/Realisierter_Stromverbrauch_2017_2024_Tag_BW.csv'
+dataPath50Hertz = '../data/Realisierter_Stromverbrauch_2017_2024_Tag_50Hertz.csv'
+dataPathBW = '../data/Realisierter_Stromverbrauch_2017_2024_Tag_BW.csv'
 data50Hertz = pd.read_csv(dataPath50Hertz, delimiter=';')
 dataBW = pd.read_csv(dataPathBW, delimiter=';')
 zeit_spalte = 'Datum von'

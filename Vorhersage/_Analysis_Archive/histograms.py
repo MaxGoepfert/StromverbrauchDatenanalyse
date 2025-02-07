@@ -79,9 +79,9 @@ def plotHistogram(data, zeit_spalte, last_spalte, title):
 
 
 # call funtion with data
-dataPath50Hertz = 'data/Realisierter_Stromverbrauch_2017_2024_Tag_50Hertz.csv'
-dataPathBW = 'data/Realisierter_Stromverbrauch_2017_2024_Tag_BW.csv'
-dataPath_DE = 'data/Realisierter_Stromverbrauch_2017-2024_Tag.csv'
+dataPath50Hertz = '../data/Realisierter_Stromverbrauch_2017_2024_Tag_50Hertz.csv'
+dataPathBW = '../data/Realisierter_Stromverbrauch_2017_2024_Tag_BW.csv'
+dataPath_DE = '../data/Realisierter_Stromverbrauch_2017-2024_Tag.csv'
 data50Hertz = pd.read_csv(dataPath50Hertz, delimiter=';')
 dataBW = pd.read_csv(dataPathBW, delimiter=';')
 dataDE = pd.read_csv(dataPath_DE, delimiter=';')

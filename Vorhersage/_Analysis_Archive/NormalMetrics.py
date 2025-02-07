@@ -67,9 +67,9 @@ def movingAvg(dataset, zeit_spalte, last_spalte, title):
 
 
 if __name__ == "__main__":
-    dataPath = "data/Realisierter_Stromverbrauch_2017-2024_Tag.csv"
-    dataPath2 = "data/Realisierter_Stromverbrauch_2017_2024_Tag_50Hertz.csv"
-    dataPath3 = "data/Realisierter_Stromverbrauch_2017_2024_Tag_BW.csv"
+    dataPath = "../data/Realisierter_Stromverbrauch_2017-2024_Tag.csv"
+    dataPath2 = "../data/Realisierter_Stromverbrauch_2017_2024_Tag_50Hertz.csv"
+    dataPath3 = "../data/Realisierter_Stromverbrauch_2017_2024_Tag_BW.csv"
 
     data = pd.read_csv(dataPath, delimiter=';')
     data_50Hertz = pd.read_csv(dataPath2, delimiter=';')

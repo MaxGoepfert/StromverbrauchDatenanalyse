@@ -47,6 +47,7 @@ def plotBoxplot(data, zeit_spalte, last_spalte, title):
     plt.xlabel('Wochentage (Montag-Sonntag)')
     plt.ylabel('Stromverbrauch (in Mio MWh)')
     plt.show()
+    ### Analog: Gruppierung nach Monate
     """
     # month
     df_verbrauch['Monat'] = df_verbrauch.index.month
@@ -62,9 +63,9 @@ def plotBoxplot(data, zeit_spalte, last_spalte, title):
 
 
 # call funtion with data
-dataPath50Hertz = 'data/Realisierter_Stromverbrauch_2017_2024_Tag_50Hertz.csv'
-dataPathBW = 'data/Realisierter_Stromverbrauch_2017_2024_Tag_BW.csv'
-dataPath_DE = 'data/Realisierter_Stromverbrauch_2017-2024_Tag.csv'
+dataPath50Hertz = '../data/Realisierter_Stromverbrauch_2017_2024_Tag_50Hertz.csv'
+dataPathBW = '../data/Realisierter_Stromverbrauch_2017_2024_Tag_BW.csv'
+dataPath_DE = '../data/Realisierter_Stromverbrauch_2017-2024_Tag.csv'
 data50Hertz = pd.read_csv(dataPath50Hertz, delimiter=';')
 dataBW = pd.read_csv(dataPathBW, delimiter=';')
 data_DE = pd.read_csv(dataPath_DE, delimiter=';')
