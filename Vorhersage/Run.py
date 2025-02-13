@@ -123,7 +123,8 @@ if __name__ == "__main__":
     zone = input("Bitte Regelzone auswählen [DE / TransNetBW / 50Hertz]: \n")
     zone = zone.lower()
     leak = input(
-        "Vorhersage auf Tagesbasis mithilfe der tatsächlichen Daten des Vortages erlauben? \nBemerkung: Führt zu Data Leak für Vorhersagen weiter als einen Tag in die Zukunft! [ J / N]: \n")
+        "Vorhersagehorizont: \nVorhersagen für den Folgetag (direkte Vorhersage mithilfe von Vortages-Stromverbrauchsdaten): [J] \n"
+        "Für iterative Vorhersagen (Rolling Window) mit Vorhersagehorizont eines Kalenderjahres [beliebige andere Taste]\n")
 
     ### Einlesen der Datensätze
     if zone == "de":
@@ -243,19 +244,19 @@ if __name__ == "__main__":
         all_rmse += rmse
         all_mae += mae
         num_split += 1
-        print(f"Evaluation for the fold: {num_split}:\n")
-        print(f"Evaluation: Root mean squared error is: {rmse: .3f} MWh")
-        print(f"Evaluation: Mean absolute error is: {mae: .3f} MWh")
-        print(f"Evaluation: Mean absolute percentage error is: {mape * 100: .3f} %\n")
+        print(f"Evaluation für Split: {num_split}\nTestjahr: {2019 + num_split}")
+        print(f"Evaluation: Root mean squared error: {rmse: .3f} MWh")
+        print(f"Evaluation: Mean absolute error: {mae: .3f} MWh")
+        print(f"Evaluation: Mean absolute percentage error: {mape * 100: .3f} %\n")
 
         if num_split == 4:
             # Plots der Vorhersagen für 2023
             visualizePredictions(train, test, predictions)
             visualizePredictions_23(test, predictions)
 
-    print(f"Overall Evaluation: Root mean squared error is: {all_rmse / num_split: .3f} MWh")
-    print(f"Oberall Evaluation: Mean absolute error is: {all_mae / num_split: .3f} MWh")
-    print(f"Overall Evaluation: Mean absolute percentage error is: {all_mape * 100 / num_split: .3f} %")
+    print(f"Evaluation Cross Validierung: Root mean squared error: {all_rmse / num_split: .3f} MWh")
+    print(f"Evaluation Cross Validierung: Mean absolute error: {all_mae / num_split: .3f} MWh")
+    print(f"Evaluation Cross Validierung: Mean absolute percentage error: {all_mape * 100 / num_split: .3f} %")
 
     ### Trainingsdatensatz als Excel abspeichern -> Dafür braucht man das Modul openpyxl!!
     # trainings_daten = train.copy()

@@ -1,0 +1,28 @@
+Hier sind die Download Links der DWD "Open Data" Seite zu finden:
+https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/daily/kl/historical/
+
+Folgende Wetterstationen wurden benutzt:
+
+[ Stadt: Downloadlink (mit Stations-ID und Zeitraum) | Datum (letzte Aktualisierung des DWD) | Uhrzeit ]
+Berlin: tageswerte_KL_00403_19500101_20231231_hist.zip 03-Apr-2024 10:10
+Bremen: tageswerte_KL_00691_18900101_20231231_hist.zip 03-Apr-2024 10:10
+Dresden: tageswerte_KL_01048_19340101_20231231_hist.zip 03-Apr-2024 10:10
+Duesseldorf: tageswerte_KL_01078_19520101_20231231_hist.zip 03-Apr-2024 10:10
+Erfurt: tageswerte_KL_01270_19510101_20231231_hist.zip 03-Apr-2024 10:10
+Frankfurt: tageswerte_KL_01420_19490101_20231231_hist.zip 03-Apr-2024 10:10
+Hamburg: tageswerte_KL_01975_19360101_20231231_hist.zip 03-Apr-2024 10:10
+Hannover: tageswerte_KL_02014_19360101_20231231_hist.zip 03-Apr-2024 10:10
+Kiel: tageswerte_KL_02961_19980101_20231231_hist.zip 03-Apr-2024 10:10
+Magdeburg: tageswerte_KL_03126_18810101_20231231_hist.zip 03-Apr-2024 10:10
+Mainz: tageswerte_KL_03137_19480101_20230801_hist.zip 03-Apr-2024 10:10
+Muenchen: tageswerte_KL_03379_19540601_20231231_hist.zip 03-Apr-2024 10:10
+Potsdam: tageswerte_KL_03987_18930101_20231231_hist.zip 03-Apr-2024 10:10
+Saarbruecken: tageswerte_KL_04336_19510101_20231231_hist.zip 03-Apr-2024 10:10
+Schwerin: tageswerte_KL_04625_18900101_20231231_hist.zip 03-Apr-2024 10:10
+Stuttgart: tageswerte_KL_04928_19580101_20231231_hist.zip 03-Apr-2024 10:10
+
+Die Downloadlinks sind aufgebaut nach:
+tageswerte_KL_{Stations_ID}_{Zeitraum_Anfang}_{Zeitraum_Ende}_hist.zip
+ - Neben den Messwerten finden sich im ZIP-Ordner einige Dateien mit Metadaten
+ - Die Text-Datei mit den Messwerten hat den Namen:
+    produkt_klima_tag_{Zeitraum_Anfang}_{Zeitraum_Ende}_{Stations_ID}.txt
