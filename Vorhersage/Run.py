@@ -10,6 +10,7 @@ import Lag_features
 import Klima
 import Holiday_feature
 import config
+import features
 
 pd.set_option('display.max_columns', 50)
 pd.set_option('display.max_colwidth', 2000)
@@ -150,7 +151,7 @@ if __name__ == "__main__":
 
     ### Diese Funktion gibt einige Analysen aus, im Zuge des Feature Engineering
     # Berechnet Korrelationen der Klimadaten und untersucht die Ausreißer im Zusammenhang mit den Feiertagen
-    # feature_engineering(dataset)
+    features.feature_engineering(dataset, zone)
 
     # Feature Spaltennamen speichern (in array features)
     holiday_feature = []

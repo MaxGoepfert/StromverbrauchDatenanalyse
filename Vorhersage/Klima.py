@@ -74,7 +74,7 @@ def get_weather_data(zone):
         try:
             # Datei laden
             data = pd.read_csv(file_path, delimiter=';')
-            print(f"Lade Daten von Wetterstation {state}... ")
+            # print(f"Lade Daten von Wetterstation {state}... ")
             data = convertDatasets(data) # Bereinigen und Konvertieren/Selektieren der Spalten
             datasets.append(data)  # Füge den geladenen DataFrame der Liste hinzu
         except FileNotFoundError:

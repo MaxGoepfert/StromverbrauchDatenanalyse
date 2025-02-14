@@ -11,7 +11,7 @@ def add_holidays_50Hertz(df):
     for states in ["BB", "BE", "MV", "SN", "ST", "TH", "HH"]:
         holiday_states = holidays.Germany(state=states)
         df['is_holiday_' + states] = df.index.to_series().apply(lambda x: x in holiday_states)
-        df['is_holiday_' + states] = df['is_holiday_' + states].astype(int)
+        #df['is_holiday_' + states] = df['is_holiday_' + states].astype(int)
     return df
 
 
