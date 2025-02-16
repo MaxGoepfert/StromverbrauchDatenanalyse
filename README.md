@@ -7,8 +7,10 @@ Dieses Projekt befasst sich mit der Vorhersage des deutschen Stromverbrauchs mit
 1. **Deskriptive Analyse**: 
    - Untersuchung des Stromverbrauchs auf Tagesbasis für Deutschland, TransnetBW und 50Hertz.
    - Visualisierung und statistische Auswertung der Verbrauchsdaten.
-   - Diese Analyse findet man unter dem Ordner Vorhersage/Analysis_Archive und kann aus dem Projektverzeichnis gestartet werden mit: python Vorhersage/Analysis_Archive/bestimmte_datei.py
-
+   - Diese Analyse findet man unter dem Ordner Vorhersage/Analysis_Archive und kann aus dem Projektverzeichnis gestartet werden mit:
+```sh
+python Vorhersage/Analysis_Archive/bestimmte_datei.py
+```
 2. **Prädiktive Analyse**:
    - Entwicklung eines Vorhersagemodells mit **XGBoost** zur Prognose des Stromverbrauchs.
    - Vorhersagen können für Deutschland, TransNetBW oder 50Hertz getroffen werden.
@@ -82,7 +84,7 @@ pip install -r requirements.txt
 
 ### 5. Projekt starten
 
-Nach der Installation kann das Projekt ausgeführt werden:
+Nach der Installation kann das Projekt mit folgendem Befehl gestartet werden:
 
 ```sh
 python Vorhersage/Run.py
@@ -92,12 +94,12 @@ python Vorhersage/Run.py
 
 ## Option 2: Installation ohne Virtual Environment
 
-1. Falls keine virtuelle Umgebung verwendet wird, können die benötigten Bibliotheken direkt installiert werden:
+### 1. Falls keine virtuelle Umgebung verwendet wird, können die benötigten Bibliotheken direkt installiert werden:
 
 ```sh
 pip install pandas numpy seaborn holidays matplotlib scikit-learn xgboost
 ```
-2. Nach der Installation kann das Projekt ausgeführt werden:
+### 2. Nach der Installation kann das Projekt mit folgendem Befehl gestartet werden:
 
 ```sh
 python Vorhersage/Run.py
@@ -111,13 +113,17 @@ Die verwendeten Daten stammen aus den folgenden Quellen:
 
 
 ### Nutzung
-Nach der Installation der benötigten Bibliotheken kann das Modell mit den vorhandenen Daten trainiert und zur Vorhersage genutzt werden. Es werden zwei Benutzereingaben erwartet:
+Nach der Installation der benötigten Bibliotheken kann das Modell mit den vorhandenen Daten trainiert und zur Vorhersage genutzt werden. Es werden zwei Benutzereingaben erwartet (Terminal):
 1. Regelzone auswählen: [DE / TransNetBW / 50Hertz] für Deutschland, TransNetBW oder 50Hertz
 2. Vorhersagehorizont auswählen: [J / beliebige Taste] für "J" Day-Ahead Vorhersagen oder "beliebige andere Taste" für Vorhersagehorizont von einem Kalenderjahr
 
 - Notiz: Für zusätzliche Analysen der Wetterdaten und Feiertags-Anomalien befindet sich eine auskommentierte Funktion:
 features.feature_engineering(dataset, zone) (Zeile 156) im Code. 
 
+### Ausgabe
+- Für jeden Trainings- und Testsatz werden Evaluierungsmetriken ausgegeben.
+- Die Evaluation über die gesamte Cross Validierung wird ausgegeben.
+- Zwei Visualisierungen der Vorhersagen werden angezeigt.
 
 ## Lizenz
 Dieses Projekt steht unter der **Creative Commons Namensnennung 4.0 International Lizenz**.
