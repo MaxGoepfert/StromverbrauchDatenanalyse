@@ -1,7 +1,7 @@
 # Ein prädiktives Modell im Kontext des deutschen Stromverbrauchs
 
 ## Projektbeschreibung
-Dieses Projekt befasst sich mit der Vorhersage des deutschen Stromverbrauchs mithilfe eines Machine Learning Modells. Wir haben Daten von **SMARD** und **Deutscher Wetter Dienst(DWD)** für den Zeitraum von **2017 bis 2024** verwendet.
+Dieses Projekt befasst sich mit der Vorhersage des deutschen Stromverbrauchs mithilfe eines Machine Learning Modells. Wir haben Daten der **Bundesnetzagentur (SMARD)** und des **Deutschen Wetter Dienstes (DWD)** für den Zeitraum von **2017 bis 2024** verwendet.
 
 ### Analyse-Schritte:
 1. **Deskriptive Analyse**: 
@@ -11,11 +11,12 @@ Dieses Projekt befasst sich mit der Vorhersage des deutschen Stromverbrauchs mit
 
 2. **Prädiktive Analyse**:
    - Entwicklung eines Vorhersagemodells mit **XGBoost** zur Prognose des Stromverbrauchs.
-   - // MAXXXXXXX
+   - Vorhersagen können für Deutschland, TransNetBW oder 50Hertz getroffen werden.
+   - Der Vorhersagehorizont kann ausgewählt werden: ein Tag ("Day-Ahead" Vorhersagen) oder ein Kalenderjahr ("Rolling Window" Ansatz)
 
 # Voraussetzungen
 
-Das Projekt wurde in **Python 3.12** entwickelt. Die genaue Python-Version kann einen kleinen Einfluss auf die Ergebnisse haben. Falls eine andere Python-Version verwendet wird, können einige Bibliotheken möglicherweise nicht kompatibel sein oder das Verhalten von Funktionen kann leicht variieren. Es wird daher empfohlen, Python 3.12 oder eine möglichst ähnliche Version zu nutzen.
+Das Projekt wurde in **Python 3.11** entwickelt. Andere Python-Versionen können geringfügige Einflüsse auf die Ergebnisse haben. Falls eine andere Python-Version verwendet wird, können einige Bibliotheken möglicherweise nicht kompatibel sein oder das Verhalten von Funktionen kann leicht variieren. Es wird daher empfohlen, Python 3.11/3.12 oder eine möglichst ähnliche Version zu nutzen.
 
 Die benötigten Bibliotheken können mit den folgenden Schritten installiert werden.
 
@@ -30,7 +31,7 @@ Es gibt zwei Möglichkeiten, das Projekt zu installieren:
 
 ---
 
-## Option 1: Installation & Nutzung der virtuellen Umgebung
+## Option 1: Installation der virtuellen Umgebung
 
 ### 1. Repository klonen
 
@@ -101,11 +102,17 @@ pip install pandas numpy seaborn holidays matplotlib scikit-learn xgboost
 Die verwendeten Daten stammen aus den folgenden Quellen:
 - **SMARD** (Strommarktdaten) - [Downloadlink](https://www.smard.de/home/downloadcenter/download-marktdaten/)
 - **Deutscher Wetter Dienst(DWD)** - [Downloadlink](https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/daily/kl/historical/)
-- Path zu benutzten Wetterstationen - Die exakt verwendeten Daten können im Ordner StromverbrauchDatenanalyse/Vorhersage/Wetterdaten/meta_wetterdaten.txt gefunden werden.
+- Details zu benutzten Wetterstationen können im Ordner StromverbrauchDatenanalyse/Vorhersage/Wetterdaten/meta_wetterdaten.txt gefunden werden.
 
-// MAXXX
-//### Nutzung
-Nach der Installation der benötigten Bibliotheken kann das Modell mit den vorhandenen Daten trainiert und zur Vorhersage genutzt werden. Ein Beispiel für die Nutzung des Modells könnte folgendermaßen aussehen:
+
+### Nutzung
+Nach der Installation der benötigten Bibliotheken kann das Modell mit den vorhandenen Daten trainiert und zur Vorhersage genutzt werden. Es werden zwei Benutzereingaben erwartet:
+1. Regelzone auswählen: [DE / TransNetBW / 50Hertz] für Deutschland, TransNetBW oder 50Hertz
+2. Vorhersagehorizont auswählen: [J / beliebige Taste] für "J" Day-Ahead Vorhersagen oder "beliebige andere Taste" für Vorhersagehorizont von einem Kalenderjahr
+
+- Notiz: Für zusätzliche Analysen der Wetterdaten und Feiertags-Anomalien befindet sich eine auskommentierte Funktion:
+features.feature_engineering(dataset, zone) (Zeile 156) im Code. 
+
 
 ## Lizenz
 Dieses Projekt steht unter der **Creative Commons Namensnennung 4.0 International Lizenz**.
