@@ -7,7 +7,7 @@ Dieses Projekt befasst sich mit der Vorhersage des deutschen Stromverbrauchs mit
 1. **Deskriptive Analyse**: 
    - Untersuchung des Stromverbrauchs auf Tagesbasis für Deutschland, TransnetBW und 50Hertz.
    - Visualisierung und statistische Auswertung der Verbrauchsdaten.
-   - Diese Analyse findet man unter dem Ordener Vorhersage/Analysis_Archive und kann aus dem Projektverzeichnis gestartet werden mit: python Vorhersage/Analysis_Archive/bestimmte_datei.py
+   - Diese Analyse findet man unter dem Ordner Vorhersage/Analysis_Archive und kann aus dem Projektverzeichnis gestartet werden mit: python Vorhersage/Analysis_Archive/bestimmte_datei.py
 
 2. **Prädiktive Analyse**:
    - Entwicklung eines Vorhersagemodells mit **XGBoost** zur Prognose des Stromverbrauchs.
@@ -82,20 +82,25 @@ pip install -r requirements.txt
 
 ### 5. Projekt starten
 
-Nach der Installation kann das Projekt ausgeführt werden (falls ein Hauptskript vorhanden ist, z. B. `main.py`):
+Nach der Installation kann das Projekt ausgeführt werden:
 
 ```sh
-python main.py
+python Vorhersage/Run.py
 ```
 
 ---
 
 ## Option 2: Installation ohne Virtual Environment
 
-Falls keine virtuelle Umgebung verwendet wird, können die benötigten Bibliotheken direkt installiert werden:
+1. Falls keine virtuelle Umgebung verwendet wird, können die benötigten Bibliotheken direkt installiert werden:
 
 ```sh
 pip install pandas numpy seaborn holidays matplotlib scikit-learn xgboost
+```
+2. Nach der Installation kann das Projekt ausgeführt werden:
+
+```sh
+python Vorhersage/Run.py
 ```
 
 ### Datenquelle
