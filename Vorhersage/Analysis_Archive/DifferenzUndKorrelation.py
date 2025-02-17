@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
     # Ergebnis anzeigen oder speichern
     combined_data.index = pd.to_datetime(combined_data.index)
-    combined_data.to_csv("../data/Differenz_Stromverbrauch.csv")
+    #combined_data.to_csv("../data/Differenz_Stromverbrauch.csv")
     # combined_data.index = pd.to_datetime(combined_data.index)
 
     # plot

@@ -151,7 +151,7 @@ if __name__ == "__main__":
 
     ### Diese Funktion gibt einige Analysen aus, im Zuge des Feature Engineering
     # Berechnet Korrelationen der Klimadaten und untersucht die Ausreißer im Zusammenhang mit den Feiertagen
-    features.feature_engineering(dataset, zone)
+    #features.feature_engineering(dataset, zone)
 
     # Feature Spaltennamen speichern (in array features)
     holiday_feature = []
