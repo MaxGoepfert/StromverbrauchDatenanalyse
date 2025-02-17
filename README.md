@@ -118,7 +118,7 @@ Nach der Installation der benötigten Bibliotheken kann das Modell mit den vorha
 2. Vorhersagehorizont auswählen: [J / beliebige Taste] für "J" Day-Ahead Vorhersagen oder "beliebige andere Taste" für Vorhersagehorizont von einem Kalenderjahr
 
 - Notiz: Für zusätzliche Analysen der Wetterdaten und Feiertags-Anomalien befindet sich eine auskommentierte Funktion:
-features.feature_engineering(dataset, zone) (Zeile 156) im Code. 
+features.feature_engineering(dataset, zone) (Zeile 154) im Code. 
 
 ### Ausgabe
 - Für jeden Trainings- und Testsatz werden Evaluierungsmetriken ausgegeben.
